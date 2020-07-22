@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja" class="h-100">
+
+<head>
+    <title>アカウント | SPBUploader</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <script src="/assets/js/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://v5.bootstrap-guide.com/js/bs-form-file-input.min.js"></script>
+</head>
+
+<body class="d-flex flex-column h-100">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">SPBUploader</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/">ホーム</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/add">追加</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav mb-2 mb-lg-0">
+                    <li class="nav-item active"><a class="nav-link" href="/user">アカウント情報</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <h3 class="pt-3">アカウント情報</h3>
+        <p>あなたのアカウント情報をここから変更できます。</p>
+        <div class="mb-3">
+            <p id="username">アカウント名：</p>
+        </div>
+        <div class="mb-3">
+            メールアドレス：
+        </div>
+        <div class="mb-3">
+            認証状態：
+        </div>
+        <button type="button" class="btn btn-danger" id="logout">ログアウト</button>
+    </div>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <span class="text-muted">Made by <a href="https://github.com/opera7133">wamo</a> / Powered by <a
+                    href="https://sparebeat.com">Sparebeat</a></span>
+        </div>
+    </footer>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-auth.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-analytics.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAon97m3_ZSf98SJAeBN9FkNR61OZWKaN4",
+            authDomain: "spb-uploader.firebaseapp.com",
+            databaseURL: "https://spb-uploader.firebaseio.com",
+            projectId: "spb-uploader",
+            storageBucket: "spb-uploader.appspot.com",
+            messagingSenderId: "831133493926",
+            appId: "1:831133493926:web:c4d89dc2a5e45bb0dda267",
+            measurementId: "G-TG5YZZ5REE"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+    </script>
+    <script>
+        logout.addEventListener('click', function (e) {
+            firebase.auth().onAuthStateChanged((user) => {
+                firebase.auth().signOut().then(() => {
+                    window.location.href = '/login.html';
+                })
+                    .catch((error) => {
+                        console.log(`ログアウト時にエラーが発生しました (${error})`);
+                    });
+            });
+        });
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                //ログイン状態
+
+            } else {
+                //ログアウト状態
+                window.location.href = '/login.html';
+            }
+        });
+    </script>
+    <script>
+        window.onload = function () {
+            var user = firebase.auth().currentUser;
+            var name, email, photoUrl, uid, emailVerified;
+
+            if (user) {
+                name = user.displayName;
+                email = user.email;
+                photoUrl = user.photoURL;
+                emailVerified = user.emailVerified;
+                uid = user.uid;
+
+                console.log(name);
+                console.log(email);
+            } else {
+
+            }
+        };
+    </script>
+</body>
+
+</html>
