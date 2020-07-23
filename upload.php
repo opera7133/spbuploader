@@ -36,7 +36,7 @@
         </div>
     </nav>
     <div class="container">
-        <h3 class="pt-3">完了</h3>
+        <h3 class="pt-3 mt-5">完了</h3>
 
         <?php
 

@@ -36,7 +36,7 @@
         </div>
     </nav>
     <div class="container">
-        <h3 class="pt-3"><%TITLE></h3>
+        <h3 class="pt-3 mt-5"><%TITLE></h3>
         <p>Artist:<%ARTIST> / Charter:<%CHARTER></p>
         <div class="text-center">
             <iframe width="960" height="1280" id="sparebeat" src="https://sparebeat.com/embed/"
