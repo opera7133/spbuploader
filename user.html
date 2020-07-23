@@ -47,6 +47,7 @@
             var newemail = document.getElementById("newmail").value;
             user.updateEmail(newemail).then(function () {
                 alert("メールアドレスが更新されました。");
+                location.reload();
             }).catch(function (error) {
                 alert('更新できません（' + error.message + '）');
             });
@@ -60,8 +61,20 @@
                 displayName: newname,
             }).then(function () {
                 alert("ユーザー名が更新されました。");
+                location.reload();
             }).catch(function (error) {
                 alert('更新できません（' + error.message + '）');
+            });
+        }
+
+        function delUser() {
+            var user = firebase.auth().currentUser;
+
+            user.delete().then(function () {
+                alert("アカウントが削除されました。");
+                window.location.href = '/login';
+            }).catch(function (error) {
+                alert('削除できません（' + error.message + '）');
             });
         }
 
@@ -138,6 +151,7 @@
             document.getElementById('quickstart-password-reset').addEventListener('click', sendPasswordReset, false);
             document.getElementById('changeEmail').addEventListener('click', changeEmail, false);
             document.getElementById('changeUser').addEventListener('click', changeUsername, false);
+            document.getElementById('delUser').addEventListener('click', delUser, false);
             document.getElementById('logout').addEventListener('click', logout, false);
         }
 
@@ -198,6 +212,10 @@
         <button class="btn btn-primary" disabled id="quickstart-verify-email" name="verify-email">確認メールを送信</button>
         <button class="btn btn-primary" id="quickstart-password-reset" name="verify-email">パスワードをリセット</button>
         <button type="button" class="btn btn-danger" id="logout">ログアウト</button>
+        <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#collapseDel"
+            aria-expanded="false" aria-controls="collapseDel">
+            退会
+        </button>
         <div class="collapse" id="collapseMail">
             <div class="p-3">
                 <h4>メールアドレスの変更</h4>
@@ -216,6 +234,15 @@
                     <input class="form-control" id="newuser" type="newuser" required />
                 </div>
                 <button type="button" class="btn btn-primary" id="changeUser">変更</button>
+            </div>
+        </div>
+        <div class="collapse" id="collapseDel">
+            <div class="p-3">
+                <h4>アカウントの削除</h4>
+                <div class="mb-3">
+                    <p>本当によろしいですか？</p>
+                </div>
+                <button type="button" class="btn btn-danger" id="delUser">削除</button>
             </div>
         </div>
     </div>
