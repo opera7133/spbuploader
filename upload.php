@@ -26,6 +26,7 @@
                 </ul>
                 <ul class="navbar-nav mb-2 mb-lg-0">
                     <li class="nav-item"><a class="nav-link" href="/login">ユーザー情報</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contact">お問い合わせ</a></li>
                 </ul>
             </div>
         </div>
