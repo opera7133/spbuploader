@@ -6,6 +6,29 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-auth.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-analytics.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAon97m3_ZSf98SJAeBN9FkNR61OZWKaN4",
+            authDomain: "spb-uploader.firebaseapp.com",
+            databaseURL: "https://spb-uploader.firebaseio.com",
+            projectId: "spb-uploader",
+            storageBucket: "spb-uploader.appspot.com",
+            messagingSenderId: "831133493926",
+            appId: "1:831133493926:web:c4d89dc2a5e45bb0dda267",
+            measurementId: "G-TG5YZZ5REE"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+    </script>
 </head>
 
 <body class="d-flex flex-column h-100">
@@ -23,6 +46,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/add">追加</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/about">このサイトについて</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav mb-2 mb-lg-0">

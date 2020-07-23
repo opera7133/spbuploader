@@ -23,6 +23,9 @@
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/add">追加</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/about">このサイトについて</a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav mb-2 mb-lg-0">
                     <li class="nav-item"><a class="nav-link" href="/login">ユーザー情報</a></li>
