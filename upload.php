@@ -45,124 +45,128 @@
         <h3 class="pt-3 mt-5">処理</h3>
 
         <?php
-        
-        ini_set("display_errors", 1);
-        if (empty($_SERVER["HTTP_REFERER"])) {
-            header('Location: /add');
-        }
 
-        function checkMime()
-        {
-            //MIMEタイプを取得
-            $pathchart = $_FILES['chartfile']['tmp_name'];
-            $pathaudio = $_FILES['audiofile']['tmp_name'];
+        try {
+            ini_set("display_errors", 1);
+            if (empty($_SERVER["HTTP_REFERER"])) {
+                header('Location: /add');
+            }
 
-            $mimechart = shell_exec('file -bi '.escapeshellcmd($pathchart));
-            $mimeaudio = shell_exec('file -bi '.escapeshellcmd($pathaudio));
+            function checkMime()
+            {
+                //MIMEタイプを取得
+                if (!$ext = array_search(
+                    mime_content_type($_FILES['chartfile']['tmp_name']),
+                    array(
+                        'json' => 'application/json',
+                        'plain' => 'text/plain',
+                    ),
+                    true
+                )) {
+                    throw new RuntimeException('譜面ファイル形式が不正です');
+                }
 
-            $mimechart = trim($mimechart);
-            $mimeaudio = trim($mimeaudio);
-            $mimechart = preg_replace("/ [^ ]*/", "", $mimechart);
-            $mimeaudio = preg_replace("/ [^ ]*/", "", $mimeaudio);
+                if (!$ext = array_search(
+                    mime_content_type($_FILES['audiofile']['tmp_name']),
+                    array(
+                        'mp3' => 'audio/mpeg',
+                    ),
+                    true
+                )) {
+                    throw new RuntimeException('音楽ファイル形式が不正です');
+                }
+            }
 
-            if ($mimechart == "application/json") {
+            function makeRandStr($length)
+            {
+                $str = array_merge(range('a', 'z'), range('0', '9'), range('A', 'Z'));
+                $r_str = null;
+                for ($i = 0; $i < $length; $i++) {
+                    $r_str .= $str[rand(0, count($str) - 1)];
+                }
+                return $r_str;
+            }
+
+
+
+            $fileid = makeRandStr(8);
+
+            checkMime();
+
+            $ctempfile = $_FILES['chartfile']['tmp_name'];
+            $cfilename = './map/' . $fileid . '/' . $_FILES['chartfile']['name'];
+            $atempfile = $_FILES['audiofile']['tmp_name'];
+            $afilename = './map/' . $fileid . '/' . $_FILES['audiofile']['name'];
+
+            $path = "./map/" . $fileid . '/';
+            mkdir($path);
+
+            if (is_uploaded_file($ctempfile)) {
+                if (move_uploaded_file($ctempfile, $cfilename)) {
+                } else {
+                    echo "譜面ファイルをアップロードできません。";
+                    exit();
+                }
             } else {
-                echo("譜面ファイルが違います。");
+                echo "譜面ファイルが選択されていません。";
                 exit();
             }
-            
-            if ($mimeaudio == "audio/mpeg") {
+
+            if (is_uploaded_file($atempfile)) {
+                if (move_uploaded_file($atempfile, $afilename)) {
+                } else {
+                    echo "音楽ファイルをアップロードできません。";
+                    exit();
+                }
             } else {
-                echo("音楽ファイルが違います。");
+                echo "音楽ファイルが選択されていません。";
                 exit();
             }
+            $template = "./map/map.php";
+            $request_param = $_POST;
+
+            $title = $request_param['title'];
+            $charter = $request_param['charter'];
+            $artist = $request_param['artist'];
+            $chart = $_FILES['chartfile']['name'];
+            $audio = $_FILES['audiofile']['name'];
+            $easy = $request_param['easy'];
+            $normal = $request_param['normal'];
+            $hard = $request_param['hard'];
+
+            $contents = file_get_contents($template);
+            $contents = str_replace("<%TITLE>", htmlspecialchars($title), $contents);
+            $contents = str_replace("<%CHARTER>", htmlspecialchars($charter), $contents);
+            $contents = str_replace("<%ARTIST>", htmlspecialchars($artist), $contents);
+            $contents = str_replace("<%JSON>", htmlspecialchars($chart), $contents);
+            $contents = str_replace("<%AUDIO>", htmlspecialchars($audio), $contents);
+
+            $handle = fopen($path . "index.php", 'w');
+            fwrite($handle, $contents);
+            fclose($handle);
+
+            touch('./songs/songs.json');
+            $json = file_get_contents('./songs/songs.json');
+            $records = (array)json_decode($json, true);
+            $i = count($records) + 1;
+            $records[] = [
+                "id" => $i,
+                "title" => "<a href='/map/" . $fileid . "/'>" . $title . "</a>",
+                "charter" => $charter,
+                "artist" => $artist,
+                "easy" => $easy,
+                "normal" => $normal,
+                "hard" => $hard
+            ];
+            $out_json = json_encode($records);
+            file_put_contents('./songs/songs.json', $out_json, LOCK_EX);
+
+            echo ("<p>譜面が投稿されました。<br>あなたの譜面は<a href='/map/" . $fileid . "/'>こちら</a>から遊べます。");
+        } catch (RuntimeException $e) {
+
+            echo $e->getMessage();
         }
 
-        function makeRandStr($length)
-        {
-            $str = array_merge(range('a', 'z'), range('0', '9'), range('A', 'Z'));
-            $r_str = null;
-            for ($i = 0; $i < $length; $i++) {
-                $r_str .= $str[rand(0, count($str) - 1)];
-            }
-            return $r_str;
-        }
-
-
-
-        $fileid = makeRandStr(8);
-
-        checkMime();
-
-        $ctempfile = $_FILES['chartfile']['tmp_name'];
-        $cfilename = './map/' . $fileid . '/' . $_FILES['chartfile']['name'];
-        $atempfile = $_FILES['audiofile']['tmp_name'];
-        $afilename = './map/' . $fileid . '/' . $_FILES['audiofile']['name'];
-
-        $path = "./map/" . $fileid . '/';
-        mkdir($path);
-
-        if (is_uploaded_file($ctempfile)) {
-            if (move_uploaded_file($ctempfile, $cfilename)) {
-            } else {
-                echo "譜面ファイルをアップロードできません。";
-                exit();
-            }
-        } else {
-            echo "譜面ファイルが選択されていません。";
-            exit();
-        }
-
-        if (is_uploaded_file($atempfile)) {
-            if (move_uploaded_file($atempfile, $afilename)) {
-            } else {
-                echo "音楽ファイルをアップロードできません。";
-                exit();
-            }
-        } else {
-            echo "音楽ファイルが選択されていません。";
-            exit();
-        }
-        $template = "./map/map.php";
-        $request_param = $_POST;
-
-        $title = $request_param['title'];
-        $charter = $request_param['charter'];
-        $artist = $request_param['artist'];
-        $chart = $_FILES['chartfile']['name'];
-        $audio = $_FILES['audiofile']['name'];
-        $easy = $request_param['easy'];
-        $normal = $request_param['normal'];
-        $hard = $request_param['hard'];
-
-        $contents = file_get_contents($template);
-        $contents = str_replace("<%TITLE>", htmlspecialchars($title), $contents);
-        $contents = str_replace("<%CHARTER>", htmlspecialchars($charter), $contents);
-        $contents = str_replace("<%ARTIST>", htmlspecialchars($artist), $contents);
-        $contents = str_replace("<%JSON>", htmlspecialchars($chart), $contents);
-        $contents = str_replace("<%AUDIO>", htmlspecialchars($audio), $contents);
-
-        $handle = fopen($path . "index.php", 'w');
-        fwrite($handle, $contents);
-        fclose($handle);
-
-        touch('./songs/songs.json');
-        $json = file_get_contents('./songs/songs.json');
-        $records = (array)json_decode($json, true);
-        $i = count($records) + 1;
-        $records[] = [
-            "id" => $i,
-            "title" => "<a href='/map/" . $fileid . "/'>" . $title . "</a>",
-            "charter" => $charter,
-            "artist" => $artist,
-            "easy" => $easy,
-            "normal" => $normal,
-            "hard" => $hard
-        ];
-        $out_json = json_encode($records);
-        file_put_contents('./songs/songs.json', $out_json, LOCK_EX);
-
-        echo ("<p>譜面が投稿されました。<br>あなたの譜面は<a href='/map/" . $fileid . "/'>こちら</a>から遊べます。");
         ?>
     </div>
     <footer class="footer mt-auto pt-3 bg-light">
