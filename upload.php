@@ -42,14 +42,42 @@
         </div>
     </nav>
     <div class="container">
-        <h3 class="pt-3 mt-5">完了</h3>
+        <h3 class="pt-3 mt-5">処理</h3>
 
         <?php
-
+        
+        ini_set("display_errors", 1);
         if (empty($_SERVER["HTTP_REFERER"])) {
             header('Location: /add');
         }
-        $cfg['ALLOW_MIME'] = array('audio/mpeg', 'application/json');
+
+        function checkMime()
+        {
+            //MIMEタイプを取得
+            $pathchart = $_FILES['chartfile']['tmp_name'];
+            $pathaudio = $_FILES['audiofile']['tmp_name'];
+
+            $mimechart = shell_exec('file -bi '.escapeshellcmd($pathchart));
+            $mimeaudio = shell_exec('file -bi '.escapeshellcmd($pathaudio));
+
+            $mimechart = trim($mimechart);
+            $mimeaudio = trim($mimeaudio);
+            $mimechart = preg_replace("/ [^ ]*/", "", $mimechart);
+            $mimeaudio = preg_replace("/ [^ ]*/", "", $mimeaudio);
+
+            if ($mimechart == "application/json") {
+            } else {
+                echo("譜面ファイルが違います。");
+                exit();
+            }
+            
+            if ($mimeaudio == "audio/mpeg") {
+            } else {
+                echo("音楽ファイルが違います。");
+                exit();
+            }
+        }
+
         function makeRandStr($length)
         {
             $str = array_merge(range('a', 'z'), range('0', '9'), range('A', 'Z'));
@@ -60,14 +88,11 @@
             return $r_str;
         }
 
-        function checkMIME($filename)
-        {
-            global $cfg;
-            $mime = mime_content_type($filename);
-            return in_array($mime, $cfg['ALLOW_MIME']);
-        }
+
 
         $fileid = makeRandStr(8);
+
+        checkMime();
 
         $ctempfile = $_FILES['chartfile']['tmp_name'];
         $cfilename = './map/' . $fileid . '/' . $_FILES['chartfile']['name'];
