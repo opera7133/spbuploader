@@ -6,28 +6,26 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <script src="/assets/js/jquery-3.5.1.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
 </head>
 
 <body class="d-flex flex-column h-100">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">SPBUploader</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#Navbar" aria-controls="Navbar" aria-expanded="false" aria-label="Responsive Navbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse" id="Navbar">
                 <ul class="navbar-nav mr-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/">ホーム</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/add">追加</a>
+                        <a class="nav-link" aria-current="page" href="/add">追加</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="/login">ログイン / 登録</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/login">ユーザー情報</a></li>
                 </ul>
             </div>
         </div>
@@ -37,7 +35,9 @@
 
         <?php
 
-        if (empty($_SERVER["HTTP_REFERER"])) break;
+        if (empty($_SERVER["HTTP_REFERER"])) {
+            header('Location: /add');
+        }
         $cfg['ALLOW_MIME'] = array('audio/mpeg', 'application/json');
         function makeRandStr($length)
         {
@@ -68,7 +68,6 @@
 
         if (is_uploaded_file($ctempfile)) {
             if (move_uploaded_file($ctempfile, $cfilename)) {
-                echo $cfilename . "をアップロードしました。（譜面）";
             } else {
                 echo "譜面ファイルをアップロードできません。";
                 exit();
@@ -80,7 +79,6 @@
 
         if (is_uploaded_file($atempfile)) {
             if (move_uploaded_file($atempfile, $afilename)) {
-                echo $afilename . "をアップロードしました。（音楽）";
             } else {
                 echo "音楽ファイルをアップロードできません。";
                 exit();
@@ -131,11 +129,32 @@
         echo ("<p>譜面が投稿されました。<br>あなたの譜面は<a href='/map/" . $fileid . "/'>こちら</a>から遊べます。");
         ?>
     </div>
-    <footer class="footer mt-auto py-3 bg-light">
+    <footer class="footer mt-auto pt-3 bg-light">
         <div class="container">
-            <span class="text-muted">Made by <a href="https://github.com/opera7133">wamo</a> / Powered by <a href="https://sparebeat.com">Sparebeat</a></span>
+            <div class="row text-center">
+                <div class="col-md-4 box">
+                    <span class="text-muted">Made by <a href="https://github.com/opera7133/">wamo</a> /
+                        Powered by <a href="https://sparebeat.com">Sparebeat</a></script>
+                    </span>
+                </div>
+                <div class="col-md-4 box">
+
+                </div>
+                <div class="col-md-4 box">
+                    <ul class="list-inline quick-links">
+                        <li class="list-inline-item">
+                            <a href="/privacy">プライバシーポリシー</a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="/terms" class="">利用規約</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </footer>
+    <script src="/assets/js/jquery-3.5.1.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
 </body>
 
 </html>

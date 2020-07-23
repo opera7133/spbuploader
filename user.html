@@ -5,14 +5,145 @@
     <title>アカウント | SPBUploader</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <script src="/assets/js/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script src="https://v5.bootstrap-guide.com/js/bs-form-file-input.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-auth.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-analytics.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAon97m3_ZSf98SJAeBN9FkNR61OZWKaN4",
+            authDomain: "spb-uploader.firebaseapp.com",
+            databaseURL: "https://spb-uploader.firebaseio.com",
+            projectId: "spb-uploader",
+            storageBucket: "spb-uploader.appspot.com",
+            messagingSenderId: "831133493926",
+            appId: "1:831133493926:web:c4d89dc2a5e45bb0dda267",
+            measurementId: "G-TG5YZZ5REE"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+    </script>
+    <script type="text/javascript">
+        function sendEmailVerification() {
+            // [START sendemailverification]
+            firebase.auth().currentUser.sendEmailVerification().then(function () {
+                // Email Verification sent!
+                // [START_EXCLUDE]
+                alert('確認メールが送信されました。');
+                // [END_EXCLUDE]
+            });
+            // [END sendemailverification]
+        }
+
+        function changeEmail() {
+            var user = firebase.auth().currentUser;
+            var newemail = document.getElementById("newmail").value;
+            user.updateEmail(newemail).then(function () {
+                alert("メールアドレスが更新されました。");
+            }).catch(function (error) {
+                alert('更新できません（' + error.message + '）');
+            });
+        }
+
+        function changeUsername() {
+            var user = firebase.auth().currentUser;
+            var newname = document.getElementById("newuser").value;
+
+            user.updateProfile({
+                displayName: newname,
+            }).then(function () {
+                alert("ユーザー名が更新されました。");
+            }).catch(function (error) {
+                alert('更新できません（' + error.message + '）');
+            });
+        }
+
+        function sendPasswordReset() {
+            var email = document.getElementById('email').value;
+            // [START sendpasswordemail]
+            firebase.auth().sendPasswordResetEmail(email).then(function () {
+                // Password Reset Email Sent!
+                // [START_EXCLUDE]
+                alert('パスワードリセットメールが送信されました。');
+                // [END_EXCLUDE]
+            }).catch(function (error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // [START_EXCLUDE]
+                if (errorCode == 'auth/invalid-email') {
+                    alert(errorMessage);
+                } else if (errorCode == 'auth/user-not-found') {
+                    alert(errorMessage);
+                }
+                console.log(error);
+                // [END_EXCLUDE]
+            });
+            // [END sendpasswordemail];
+        }
+
+        function logout() {
+            firebase.auth().onAuthStateChanged((user) => {
+                firebase.auth().signOut().then(() => {
+                    window.location.href = '/login';
+                })
+                    .catch((error) => {
+                        console.log(`ログアウト時にエラーが発生しました (${error})`);
+                    });
+            });
+        };
+
+        /**
+         * initApp handles setting up UI event listeners and registering Firebase auth listeners:
+         *  - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
+         *    out, and that is where we update the UI.
+         */
+        function initApp() {
+            // Listening for auth state changes.
+            // [START authstatelistener]
+            firebase.auth().onAuthStateChanged(function (user) {
+                // [START_EXCLUDE silent]
+                document.getElementById('quickstart-verify-email').disabled = true;
+                // [END_EXCLUDE]
+                if (user) {
+                    // User is signed in.
+                    var displayName = user.displayName;
+                    var email = user.email;
+                    var emailVerified = user.emailVerified;
+                    var photoURL = user.photoURL;
+                    var isAnonymous = user.isAnonymous;
+                    var uid = user.uid;
+                    var providerData = user.providerData;
+                    // [START_EXCLUDE]
+                    document.getElementById('account-name').textContent = user.displayName;
+                    document.getElementById('account-email').textContent = user.email;
+                    document.getElementById('account-verify').textContent = user.emailVerified;
+                    if (!emailVerified) {
+                        document.getElementById('quickstart-verify-email').disabled = false;
+                    }
+                    // [END_EXCLUDE]
+                } else {
+                    window.location.href = '/login';
+                }
+            });
+
+            document.getElementById('quickstart-verify-email').addEventListener('click', sendEmailVerification, false);
+            document.getElementById('quickstart-password-reset').addEventListener('click', sendPasswordReset, false);
+            document.getElementById('changeEmail').addEventListener('click', changeEmail, false);
+            document.getElementById('changeUser').addEventListener('click', changeUsername, false);
+            document.getElementById('logout').addEventListener('click', logout, false);
+        }
+
+        window.onload = function () {
+            initApp();
+        };
+    </script>
 </head>
 
 <body class="d-flex flex-column h-100">
@@ -39,91 +170,76 @@
         </div>
     </nav>
     <div class="container">
-        <h3 class="pt-3">アカウント情報</h3>
-        <p>あなたのアカウント情報をここから変更できます。</p>
-        <div class="mb-3">
-            <p id="username">アカウント名：</p>
+        <h3 class="pt-3">ユーザー情報</h3>
+        <p>このページからユーザー情報を変更できます。</p>
+        <div class="quickstart-user-details-container">
+            <div class="mb-3">ユーザー名: <span id="account-name">不明</span></p>
+            </div>
+            <div class="mb-3">
+                <p>メールアドレス：<span id="account-email">不明</span></p>
+            </div>
+            <div class="mb-3">
+                <p>認証状態：<span id="account-verify">不明</span></p>
+            </div>
         </div>
-        <div class="mb-3">
-            メールアドレス：
-        </div>
-        <div class="mb-3">
-            認証状態：
-        </div>
+        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#collapseMail"
+            aria-expanded="false" aria-controls="collapseMail">
+            メールアドレスを変更
+        </button>
+        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#collapseUser"
+            aria-expanded="false" aria-controls="collapseUser">
+            ユーザー名を変更
+        </button>
+        <button class="btn btn-primary" disabled id="quickstart-verify-email" name="verify-email">確認メールを送信</button>
+        <button class="btn btn-primary" id="quickstart-password-reset" name="verify-email">パスワードをリセット</button>
         <button type="button" class="btn btn-danger" id="logout">ログアウト</button>
+        <div class="collapse" id="collapseMail">
+            <div class="p-3">
+                <h4>メールアドレスの変更</h4>
+                <div class="mb-3">
+                    <label for="newmail" class="form-label">新規メールアドレス</label>
+                    <input class="form-control" id="newmail" type="newmail" required />
+                </div>
+                <button type="button" class="btn btn-primary" id="changeEmail">変更</button>
+            </div>
+        </div>
+        <div class="collapse" id="collapseUser">
+            <div class="p-3">
+                <h4>ユーザー名の変更</h4>
+                <div class="mb-3">
+                    <label for="newuser" class="form-label">新規ユーザー名</label>
+                    <input class="form-control" id="newuser" type="newuser" required />
+                </div>
+                <button type="button" class="btn btn-primary" id="changeUser">変更</button>
+            </div>
+        </div>
     </div>
-    <footer class="footer mt-auto py-3 bg-light">
+    <footer class="footer mt-auto pt-3 bg-light">
         <div class="container">
-            <span class="text-muted">Made by <a href="https://github.com/opera7133">wamo</a> / Powered by <a
-                    href="https://sparebeat.com">Sparebeat</a></span>
+            <div class="row text-center">
+                <div class="col-md-4 box">
+                    <span class="text-muted">Made by <a href="https://github.com/opera7133/">wamo</a> /
+                        Powered by <a href="https://sparebeat.com">Sparebeat</a></script>
+                    </span>
+                </div>
+                <div class="col-md-4 box">
+
+                </div>
+                <div class="col-md-4 box">
+                    <ul class="list-inline quick-links">
+                        <li class="list-inline-item">
+                            <a href="/privacy">プライバシーポリシー</a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a href="/terms" class="">利用規約</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </footer>
-
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-auth.js"></script>
-
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-     https://firebase.google.com/docs/web/setup#available-libraries -->
-    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-analytics.js"></script>
-
-    <script>
-        // Your web app's Firebase configuration
-        var firebaseConfig = {
-            apiKey: "AIzaSyAon97m3_ZSf98SJAeBN9FkNR61OZWKaN4",
-            authDomain: "spb-uploader.firebaseapp.com",
-            databaseURL: "https://spb-uploader.firebaseio.com",
-            projectId: "spb-uploader",
-            storageBucket: "spb-uploader.appspot.com",
-            messagingSenderId: "831133493926",
-            appId: "1:831133493926:web:c4d89dc2a5e45bb0dda267",
-            measurementId: "G-TG5YZZ5REE"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        firebase.analytics();
-    </script>
-    <script>
-        logout.addEventListener('click', function (e) {
-            firebase.auth().onAuthStateChanged((user) => {
-                firebase.auth().signOut().then(() => {
-                    window.location.href = '/login.html';
-                })
-                    .catch((error) => {
-                        console.log(`ログアウト時にエラーが発生しました (${error})`);
-                    });
-            });
-        });
-
-        firebase.auth().onAuthStateChanged(function (user) {
-            if (user) {
-                //ログイン状態
-
-            } else {
-                //ログアウト状態
-                window.location.href = '/login.html';
-            }
-        });
-    </script>
-    <script>
-        window.onload = function () {
-            var user = firebase.auth().currentUser;
-            var name, email, photoUrl, uid, emailVerified;
-
-            if (user) {
-                name = user.displayName;
-                email = user.email;
-                photoUrl = user.photoURL;
-                emailVerified = user.emailVerified;
-                uid = user.uid;
-
-                console.log(name);
-                console.log(email);
-            } else {
-
-            }
-        };
-    </script>
+    <script src="/assets/js/jquery-3.5.1.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
 </body>
 
 </html>
