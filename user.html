@@ -140,10 +140,15 @@
                     var isAnonymous = user.isAnonymous;
                     var uid = user.uid;
                     var providerData = user.providerData;
+                    var verifiedJP = ""
+
+                    if (emailVerified) {
+                    	verifiedJP = "認証済み"
+                    }
                     // [START_EXCLUDE]
                     document.getElementById('account-name').textContent = user.displayName;
                     document.getElementById('account-email').textContent = user.email;
-                    document.getElementById('account-verify').textContent = user.emailVerified;
+                    document.getElementById('account-verify').textContent = verifiedJP;
                     if (!emailVerified) {
                         document.getElementById('quickstart-verify-email').disabled = false;
                     }

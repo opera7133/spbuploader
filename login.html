@@ -93,7 +93,15 @@
     
                 firebase.auth().createUserWithEmailAndPassword(mailAddress, password)
                     .catch(function (error) {
+                        if (error == "auth/email-already-in-use") {
+                            alert("メールアドレスはすでに使用されています。");
+                        } else if (error = "auth/invalid-email") {
+                            alert("メールアドレスの型が不正です。");
+                        } else if (error = "auth/weak-password") {
+                            alert("パスワードが弱いです。");
+                        } else {
                         alert('登録できません（' + error.message + '）');
+                        }
                     });
             });
     
@@ -103,7 +111,17 @@
     
                 firebase.auth().signInWithEmailAndPassword(mailAddress, password)
                     .catch(function (error) {
+                        if (error == "auth/invalid-email"){
+                            alert("メールアドレスの型が不正です。");
+                        } else if (error == "auth/user-disabled") {
+                            alert("ユーザーが無効化されています。"); 
+                        } else if (error == "auth/user-not-found") {
+                            alert("ユーザーが見つかりません。");
+                        } else if (error == "auth/wrong-password") {
+                            alert("パスワードが違います。");
+                        } else {
                         alert('ログインできません（' + error.message + '）');
+                        }
                     });
             });
     
