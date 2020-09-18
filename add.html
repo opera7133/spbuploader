@@ -165,44 +165,15 @@
         firebase.analytics();
     </script>
     <script>
-        function initApp() {
-            // Listening for auth state changes.
-            // [START authstatelistener]
-            firebase.auth().onAuthStateChanged(function (user) {
-                // [START_EXCLUDE silent]
-                document.getElementById('quickstart-verify-email').disabled = true;
-                // [END_EXCLUDE]
+        firebase.auth().onAuthStateChanged(function (user) {
                 if (user) {
-                    // User is signed in.
-                    var displayName = user.displayName;
-                    var email = user.email;
-                    var emailVerified = user.emailVerified;
-                    var photoURL = user.photoURL;
-                    var isAnonymous = user.isAnonymous;
-                    var uid = user.uid;
-                    var providerData = user.providerData;
-                    var verifiedJP = ""
-
-                    if (emailVerified) {
-                    	verifiedJP = "認証済み"
-                    }
-                    // [START_EXCLUDE]
-                    document.getElementById('account-name').textContent = user.displayName;
-                    document.getElementById('account-email').textContent = user.email;
-                    document.getElementById('account-verify').textContent = verifiedJP;
-                    if (!emailVerified) {
-                        document.getElementById('quickstart-verify-email').disabled = false;
-                    }
-                    // [END_EXCLUDE]
+                    //ログイン状態
                 } else {
+                    //ログアウト状態
                     window.location.href = '/login';
                 }
             });
         }
-        
-        window.onload = function () {
-            initApp();
-        };
     </script>
     <footer class="footer mt-auto pt-3 bg-light">
         <div class="container">
