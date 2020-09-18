@@ -141,6 +141,69 @@
                 })
         })()
     </script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-auth.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-analytics.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAon97m3_ZSf98SJAeBN9FkNR61OZWKaN4",
+            authDomain: "spb-uploader.firebaseapp.com",
+            databaseURL: "https://spb-uploader.firebaseio.com",
+            projectId: "spb-uploader",
+            storageBucket: "spb-uploader.appspot.com",
+            messagingSenderId: "831133493926",
+            appId: "1:831133493926:web:c4d89dc2a5e45bb0dda267",
+            measurementId: "G-TG5YZZ5REE"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+    </script>
+    <script>
+        function initApp() {
+            // Listening for auth state changes.
+            // [START authstatelistener]
+            firebase.auth().onAuthStateChanged(function (user) {
+                // [START_EXCLUDE silent]
+                document.getElementById('quickstart-verify-email').disabled = true;
+                // [END_EXCLUDE]
+                if (user) {
+                    // User is signed in.
+                    var displayName = user.displayName;
+                    var email = user.email;
+                    var emailVerified = user.emailVerified;
+                    var photoURL = user.photoURL;
+                    var isAnonymous = user.isAnonymous;
+                    var uid = user.uid;
+                    var providerData = user.providerData;
+                    var verifiedJP = ""
+
+                    if (emailVerified) {
+                    	verifiedJP = "認証済み"
+                    }
+                    // [START_EXCLUDE]
+                    document.getElementById('account-name').textContent = user.displayName;
+                    document.getElementById('account-email').textContent = user.email;
+                    document.getElementById('account-verify').textContent = verifiedJP;
+                    if (!emailVerified) {
+                        document.getElementById('quickstart-verify-email').disabled = false;
+                    }
+                    // [END_EXCLUDE]
+                } else {
+                    window.location.href = '/login';
+                }
+            });
+        }
+        
+        window.onload = function () {
+            initApp();
+        };
+    </script>
     <footer class="footer mt-auto pt-3 bg-light">
         <div class="container">
             <div class="row text-center">
