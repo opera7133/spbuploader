@@ -59,26 +59,14 @@
                 <label for="artist" class="form-label">作曲者名</label>
                 <input type="text" name="artist" class="form-control" id="artist" required>
             </div>
-            <input type="hidden" name="MAX_FILE_SIZE" value="300000000" />
+            <input type="hidden" name="MAX_FILE_SIZE" value="300000000000" />
             <div class="col-12">
                 <label for="audio" class="form-label">音楽ファイル (mp3)</label>
-                <div id="audio" class="form-file ">
-                    <input name="audiofile" type="file" class="form-file-input" id="audioFile" required>
-                    <label class="form-file-label" for="chartFile">
-                        <span class="form-file-text">ファイルを選択...</span>
-                        <span class="form-file-button">参照</span>
-                    </label>
-                </div>
+                <input type="file" name="audiofile" class="form-control" id="audioFile" required>
             </div>
             <div class="col-12">
                 <label for="chart" class="form-label">譜面ファイル (json)</label>
-                <div id="chart" class="form-file">
-                    <input name="chartfile" type="file" class="form-file-input" id="chartFile" required>
-                    <label class="form-file-label" for="chartFile">
-                        <span class="form-file-text">ファイルを選択...</span>
-                        <span class="form-file-button">参照</span>
-                    </label>
-                </div>
+                <input type="file" name="chartfile" class="form-control"  id="chartFile" required>
             </div>
             <div class="col-md-4">
                 <label for="easy" class="form-label">EASY</label>
