@@ -48,3 +48,26 @@ export const COLUMNS: ColumnDef<any>[] = [
     ]
   },
 ];
+
+export const USERCOLUMNS: ColumnDef<any>[] = [
+  {
+    header: "UID",
+    accessorKey: "uid",
+  },
+  {
+    header: "名前",
+    accessorKey: "displayName",
+  },
+  {
+    header: "メールアドレス",
+    accessorKey: "email",
+  },
+  {
+    header: "凍結",
+    accessorKey: "disabled"
+  },
+  {
+    header: "ロール",
+    accessorKey: "customClaims.roles"
+  }
+]

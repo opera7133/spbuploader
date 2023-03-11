@@ -19,5 +19,6 @@ declare namespace NodeJS {
     NEXTAUTH_URL: string;
     NEXTAUTH_SECRET: string;
     NEXT_CSRF_SECRET: string;
+    NEXT_PUBLIC_NEXT_SITE_URL: string;
   }
 }

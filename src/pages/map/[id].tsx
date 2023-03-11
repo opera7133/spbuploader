@@ -5,7 +5,7 @@ import { GetServerSidePropsContext } from "next";
 import NextHeadSeo from "next-head-seo";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { BsTrash3Fill, BsPencilFill } from "react-icons/bs";
+import { BsTrash3Fill, BsPencilFill, BsFillHeartFill } from "react-icons/bs";
 import Script from "next/script";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/router";
@@ -16,6 +16,9 @@ import { getToken } from "next-auth/jwt";
 export default function ShowMap({ user, id, data }: any) {
   const [width, setWidth] = useState(1.0);
   const [timeline, setTimeline] = useState("");
+  const [like, setLike] = useState<boolean>(
+    user ? user.favorites.includes(id) : false
+  );
   const router = useRouter();
   const setScale = () => {
     let scale = document.documentElement.clientWidth / 960;
@@ -33,6 +36,21 @@ export default function ShowMap({ user, id, data }: any) {
         toast.success("譜面を削除しました");
         router.push("/");
       }
+    }
+  };
+  const favMap = async () => {
+    const res = await (
+      await fetch(`/api/map/favorite?id=${id}&fav=${like}`, {
+        method: "POST",
+      })
+    ).json();
+    if (res.status === "error") {
+      toast.error(res.error);
+    } else {
+      toast.success(
+        like ? "譜面のお気に入りを解除しました" : "譜面をお気に入りしました"
+      );
+      setLike(!like);
     }
   };
   const updateTimeline = async () => {
@@ -65,6 +83,11 @@ export default function ShowMap({ user, id, data }: any) {
       <NextHeadSeo
         title={`${data.song.name} - SPBUploader`}
         description={`Music by ${data.song.composer}, Map by ${data.map.creator}`}
+        og={{
+          title: `${data.song.name} - SPBUploader`,
+          description: `Music by ${data.song.composer}, Map by ${data.map.creator}`,
+          image: `${process.env.NEXT_PUBLIC_NEXT_SITE_URL}/img/ogp.png`,
+        }}
       />
       <div className="flex flex-col md:flex-row justify-between items-start px-4">
         <div>
@@ -96,16 +119,28 @@ export default function ShowMap({ user, id, data }: any) {
             追加日：{format(new Date(data.createdAt), "yyyy/MM/dd")}
           </p>
         </div>
-        {data.uid === user?.id && (
-          <div className="flex items-center gap-2">
+
+        <div className="flex items-center gap-2">
+          {data.uid === user?.id && (
             <button
               onClick={deleteMap}
-              className="p-2 duration-200 rounded-full hover:bg-gray-300"
+              className="p-3 duration-200 rounded-full hover:bg-gray-300"
             >
               <BsTrash3Fill size={20} />
             </button>
-          </div>
-        )}
+          )}
+          {data.uid !== user?.id && (
+            <button
+              onClick={favMap}
+              className="p-3 duration-200 rounded-full hover:bg-gray-300"
+            >
+              <BsFillHeartFill
+                size={20}
+                className={like ? "fill-rose-500" : "fill-gray-400"}
+              />
+            </button>
+          )}
+        </div>
       </div>
       <div className="my-4">
         <iframe
@@ -121,13 +156,13 @@ export default function ShowMap({ user, id, data }: any) {
           onLoad={() => {
             //@ts-ignore
             Sparebeat.load(
-              `${process.env.NEXT_PUBLIC_S3_PUBLIC_URL}/maps/${id}/map.json`,
-              `${process.env.NEXT_PUBLIC_S3_PUBLIC_URL}/maps/${id}/song.mp3`
+              `${process.env.NEXT_PUBLIC_S3_PUBLIC_URL}/maps/${id}/${data.map.fileName}`,
+              `${process.env.NEXT_PUBLIC_S3_PUBLIC_URL}/maps/${id}/${data.song.fileName}`
             );
           }}
         />
       </div>
-      {data.uid !== user.id && (
+      {data.uid === user.id && (
         <div>
           <h2 className="text-xl font-bold my-2">
             {data.timeline ? "タイムラインURLを変更" : "タイムラインURLを設定"}
@@ -178,11 +213,23 @@ export const getServerSideProps = setup(
     docSnap.createdAt = docSnap.createdAt.toDate().toString();
     if (token) {
       const user = JSON.parse(JSON.stringify(token, null, 2));
+      const userRef = doc(db, "users", user.uid);
+      const userData = (await getDoc(userRef)).data();
+      const favs = userData?.favorites
+        ? await Promise.all(
+            userData.favorites.map(async (fav: any) => {
+              return (await getDoc(fav)).id;
+            })
+          )
+        : [];
       return {
         props: {
           id: id,
           data: docSnap,
-          user,
+          user: {
+            ...user,
+            favorites: favs,
+          },
         },
       };
     }

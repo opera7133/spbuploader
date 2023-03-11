@@ -106,7 +106,7 @@ export default function SignUp() {
                     type="text"
                     {...register("name", { required: true })}
                     id="name"
-                    placeholder="username@example.com"
+                    placeholder="John Doe"
                   />
                 </div>
               </div>
@@ -145,30 +145,11 @@ export default function SignUp() {
             </form>
             <div className="flex flex-col gap-3">
               <button
-                className="flex flex-row items-center gap-3 bg-fuchsia-600 duration-200 hover:bg-fuchsia-500 text-white px-4 py-2 rounded-md"
+                className="inline-block gap-3 bg-fuchsia-600 duration-200 hover:bg-fuchsia-500 text-white px-4 py-2 rounded-md"
                 type="submit"
                 form="signup-form"
               >
-                <BsFillEnvelopeFill
-                  size={20}
-                  color="white"
-                  className="inline-block"
-                />
-                <span>メールアドレスで登録</span>
-              </button>
-              <button
-                className="flex flex-row items-center gap-3 bg-black duration-200 hover:bg-zinc-800 text-white px-4 py-2 rounded-md"
-                onClick={() => handleOAuthSignIn(githubProvider)}
-              >
-                <BsGithub size={20} color="white" className="inline-block" />
-                <span>GitHubで登録</span>
-              </button>
-              <button
-                className="flex flex-row items-center gap-3 bg-blue-500 duration-200 hover:bg-blue-400 text-white px-4 py-2 rounded-md"
-                onClick={() => handleOAuthSignIn(googleProvider)}
-              >
-                <BsGoogle size={20} color="white" className="inline-block" />
-                <span>Googleで登録</span>
+                <span>登録</span>
               </button>
             </div>
           </div>

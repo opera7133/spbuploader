@@ -25,7 +25,6 @@ export default function Upload() {
   const {
     register,
     handleSubmit,
-    getValues,
     formState: { errors },
   } = useForm<Inputs>();
   const router = useRouter();
@@ -57,6 +56,7 @@ export default function Upload() {
         <NextHeadSeo
           title="追加 - SPBUploader"
           description="シンプルなSparebeatの譜面アップローダー"
+          robots="noindex, nofollow"
         />
         <div className="px-4">
           <h2 className="text-3xl font-bold mb-3">追加</h2>
@@ -71,9 +71,7 @@ export default function Upload() {
             <input
               type="text"
               id="songname"
-              {...register("song.name", {
-                required: true,
-              })}
+              {...register("song.name")}
               className={twMerge(
                 "bg-gray-100 border-0 px-3 py-2 focus:outline-none focus:border-0 focus:ring-black focus:ring-2 duration-200 text-black rounded-md",
                 errors.song?.name && "ring-red-500 ring-2"
@@ -85,9 +83,7 @@ export default function Upload() {
             <input
               type="text"
               id="composer"
-              {...register("song.composer", {
-                required: true,
-              })}
+              {...register("song.composer")}
               className={twMerge(
                 "bg-gray-100 border-0 px-3 py-2 focus:outline-none focus:border-0 focus:ring-black focus:ring-2 duration-200 text-black rounded-md",
                 errors.song?.composer && "ring-red-500 ring-2"

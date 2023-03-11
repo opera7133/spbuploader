@@ -12,20 +12,32 @@ import {
   reauthenticateWithCredential,
   deleteUser,
   sendEmailVerification,
+  reauthenticateWithRedirect,
+  GithubAuthProvider,
 } from "firebase/auth";
 import { firebaseApp } from "@/lib/firebase";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import imageCompression from "browser-image-compression";
 import { twMerge } from "tailwind-merge";
 import { setup } from "@/lib/csrf";
 import { GetServerSidePropsContext } from "next";
 import { getToken } from "next-auth/jwt";
+import {
+  doc,
+  getDoc,
+  getFirestore,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { firebaseAdmin } from "@/lib/firebaseAdmin";
 
 type Inputs = {
   username: string;
+  desc: string;
   email: string;
+  website: string;
   oldPass?: string;
   newPass?: string;
   newPassConfirm?: string;
@@ -40,7 +52,7 @@ export default function Settings({ user }: any) {
     getValues,
     formState: { errors },
   } = useForm<Inputs>();
-  const [img, setImg] = useState(user.picture);
+  const [img, setImg] = useState(user.photoURL);
   const sendConfirmMail = async (
     e: React.MouseEvent<HTMLElement, MouseEvent>
   ) => {
@@ -110,6 +122,19 @@ export default function Settings({ user }: any) {
         await updateProfile(auth.currentUser, {
           displayName: data.username,
         });
+        const db = getFirestore(firebaseApp);
+        const testUser = (await getDoc(doc(db, "users", user.uid))).data();
+        if (testUser) {
+          const updateUser = await updateDoc(doc(db, "users", user.uid), {
+            desc: data.desc,
+            website: data.website,
+          });
+        } else {
+          const createUser = await setDoc(doc(db, "users", user.uid), {
+            desc: data.desc,
+            website: data.website,
+          });
+        }
         if (
           data.oldPass &&
           data.newPass &&
@@ -140,7 +165,6 @@ export default function Settings({ user }: any) {
       }
     }
   };
-
   if (user)
     return (
       <Layout>
@@ -174,7 +198,7 @@ export default function Settings({ user }: any) {
               alt="Avatar"
               width={150}
               height={150}
-              className="absolute top-0 rounded-full object-cover duration-200 hover:opacity-50"
+              className="rounded-full object-cover absolute top-0 duration-200 hover:opacity-50"
             />
           </label>
           <button
@@ -186,18 +210,49 @@ export default function Settings({ user }: any) {
           >
             デフォルトに戻す
           </button>
+
           <div className="my-3 max-w-lg flex flex-col gap-1">
             <label htmlFor="username">ユーザー名</label>
             <input
               type="text"
               id="username"
-              defaultValue={user.name || ""}
+              defaultValue={user.displayName || ""}
               {...register("username", {
                 required: true,
               })}
               className={twMerge(
                 "bg-gray-100 border-0 px-3 py-2 focus:outline-none focus:border-0 focus:ring-black focus:ring-2 duration-200 text-black rounded-md",
                 errors.username && "ring-red-500 ring-2"
+              )}
+            />
+          </div>
+          <div className="my-3 max-w-lg w-full flex flex-col gap-1">
+            <label htmlFor="desc">説明</label>
+            <textarea
+              id="desc"
+              defaultValue={user.desc || ""}
+              {...register("desc")}
+              rows={5}
+              className={twMerge(
+                "w-full bg-gray-100 border-0 px-3 py-2 focus:outline-none focus:border-0 focus:ring-black focus:ring-2 duration-200 text-black rounded-md",
+                errors.desc && "ring-red-500 ring-2"
+              )}
+            />
+          </div>
+          <div className="my-3 max-w-lg w-full flex flex-col gap-1">
+            <label htmlFor="website">ウェブサイト</label>
+            <input
+              type="text"
+              id="website"
+              defaultValue={user.website || ""}
+              {...register("website", {
+                pattern:
+                  /(mailto:[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)|(((?:https?)|(?:ftp)):\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/,
+              })}
+              placeholder="https://..."
+              className={twMerge(
+                "bg-gray-100 border-0 px-3 py-2 focus:outline-none focus:border-0 focus:ring-black focus:ring-2 duration-200 text-black rounded-md",
+                errors.website && "ring-red-500 ring-2"
               )}
             />
           </div>
@@ -220,7 +275,7 @@ export default function Settings({ user }: any) {
               <b>現在のパスワード欄にパスワードを入力してください</b>。
             </span>
           </div>
-          {!user.email_verified && (
+          {!user.emailVerified && (
             <p className="font-bold text-sm text-red-500">
               メールアドレスが確認されていません。
               <button
@@ -290,15 +345,28 @@ export const getServerSideProps = setup(
       secret: process.env.NEXTAUTH_SECRET,
     });
     if (token) {
-      const user = JSON.parse(JSON.stringify(token, null, 2));
+      const user = JSON.parse(
+        JSON.stringify(await firebaseAdmin.auth().getUser(token.uid))
+      );
+      console.log(user);
+      const db = getFirestore(firebaseApp);
+      const userRef = doc(db, "users", user.uid);
+      const userData = (await getDoc(userRef)).data();
       return {
         props: {
-          user,
+          user: {
+            ...user,
+            desc: userData?.desc || "",
+            website: userData?.website || "",
+          },
         },
       };
     } else {
       return {
-        notFound: true,
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
       };
     }
   }

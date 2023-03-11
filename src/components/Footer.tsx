@@ -23,7 +23,7 @@ export default function Footer() {
         <ul className="list-none flex flex-col md:flex-row items-start md:items-center gap-4">
           <li>
             <Link className="hover:underline" href="/about">
-              このサイトについて
+              Q&A
             </Link>
           </li>
           <li>

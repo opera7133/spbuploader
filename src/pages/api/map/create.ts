@@ -65,7 +65,6 @@ async function uploadMap(req: NextApiRequest, res: NextApiResponse) {
 
       //@ts-ignore
       if (songFile.mimetype !== "audio/mpeg" || mapFile.mimetype !== "application/json") throw new Error("file type not allowed")
-
       const newDoc = await addDoc(collection(db, "maps"), {
         uid: user.uid,
         map: {
@@ -73,12 +72,16 @@ async function uploadMap(req: NextApiRequest, res: NextApiResponse) {
           normal: mapData.level.normal,
           hard: mapData.level.hard,
           creator: user.name,
+          //@ts-ignore
+          fileName: mapFile.originalFilename,
           desc: fields["map[desc]"].toString().replace(/\n/g, "")
         },
         song: {
-          name: fields["song[name]"],
-          composer: fields["song[composer]"],
-          composerUrl: mapData.url
+          name: fields["song[name]"] || mapData.title,
+          //@ts-ignore
+          fileName: songFile.originalFilename,
+          composer: fields["song[composer]"] || mapData.artist,
+          composerUrl: mapData.url || ""
         },
         createdAt: Timestamp.fromDate(new Date())
       });
@@ -86,7 +89,8 @@ async function uploadMap(req: NextApiRequest, res: NextApiResponse) {
       const mapParams: PutObjectCommandInput = {
         ACL: 'public-read',
         Bucket: process.env.S3_BUCKET_NAME,
-        Key: `maps/${newDoc.id}/map.json`,
+        //@ts-ignore
+        Key: `maps/${newDoc.id}/${mapFile.originalFilename}`,
         //@ts-ignore
         ContentType: mapFile.mimetype,
         //@ts-ignore
@@ -97,7 +101,8 @@ async function uploadMap(req: NextApiRequest, res: NextApiResponse) {
       const musicParams: PutObjectCommandInput = {
         ACL: 'public-read',
         Bucket: process.env.S3_BUCKET_NAME,
-        Key: `maps/${newDoc.id}/song.mp3`,
+        //@ts-ignore
+        Key: `maps/${newDoc.id}/${songFile.originalFilename}`,
         //@ts-ignore
         ContentType: songFile.mimetype,
         //@ts-ignore

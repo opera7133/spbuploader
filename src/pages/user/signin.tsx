@@ -122,32 +122,22 @@ export default function SignIn() {
             </form>
             <div className="flex flex-col gap-3">
               <button
-                className="flex flex-row items-center gap-3 bg-fuchsia-600 duration-200 hover:bg-fuchsia-500 text-white px-4 py-2 rounded-md"
+                className="inline-block gap-3 bg-fuchsia-600 duration-200 hover:bg-fuchsia-500 text-white px-4 py-2 rounded-md"
                 type="submit"
                 form="signin-form"
               >
-                <BsFillEnvelopeFill
-                  size={20}
-                  color="white"
-                  className="inline-block"
-                />
-                <span>メールアドレスでログイン</span>
-              </button>
-              <button
-                className="flex flex-row items-center gap-3 bg-black duration-200 hover:bg-zinc-800 text-white px-4 py-2 rounded-md"
-                onClick={() => handleOAuthSignIn(githubProvider)}
-              >
-                <BsGithub size={20} color="white" className="inline-block" />
-                <span>GitHubでログイン</span>
-              </button>
-              <button
-                className="flex flex-row items-center gap-3 bg-blue-500 duration-200 hover:bg-blue-400 text-white px-4 py-2 rounded-md"
-                onClick={() => handleOAuthSignIn(googleProvider)}
-              >
-                <BsGoogle size={20} color="white" className="inline-block" />
-                <span>Googleでログイン</span>
+                <span>ログイン</span>
               </button>
             </div>
+            <p className="">
+              パスワードをお忘れですか？
+              <Link
+                className="text-blue-500 duration-200 hover:text-blue-700 hover:underline"
+                href="/user/reset"
+              >
+                パスワードをリセット
+              </Link>
+            </p>
           </div>
         </div>
       </Layout>
