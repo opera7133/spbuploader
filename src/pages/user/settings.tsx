@@ -2,7 +2,7 @@ import Layout from "@/components/Layout";
 import Image from "next/image";
 import NextHeadSeo from "next-head-seo";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import {
   getAuth,
   updateProfile,
@@ -10,6 +10,8 @@ import {
   updateEmail,
   EmailAuthProvider,
   reauthenticateWithCredential,
+  deleteUser,
+  sendEmailVerification,
 } from "firebase/auth";
 import { firebaseApp } from "@/lib/firebase";
 import toast from "react-hot-toast";
@@ -17,6 +19,9 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import imageCompression from "browser-image-compression";
 import { twMerge } from "tailwind-merge";
+import { setup } from "@/lib/csrf";
+import { GetServerSidePropsContext } from "next";
+import { getToken } from "next-auth/jwt";
 
 type Inputs = {
   username: string;
@@ -26,9 +31,8 @@ type Inputs = {
   newPassConfirm?: string;
 };
 
-export default function Settings() {
+export default function Settings({ user }: any) {
   const auth = getAuth(firebaseApp);
-  const { data: session } = useSession();
   const router = useRouter();
   const {
     register,
@@ -36,12 +40,32 @@ export default function Settings() {
     getValues,
     formState: { errors },
   } = useForm<Inputs>();
-  const [img, setImg] = useState("");
-
+  const [img, setImg] = useState(user.picture);
   const sendConfirmMail = async (
     e: React.MouseEvent<HTMLElement, MouseEvent>
   ) => {
     e.preventDefault();
+    if (auth.currentUser) await sendEmailVerification(auth.currentUser);
+    toast.success("確認メールを送信しました");
+  };
+
+  const deleteAccount = async (
+    e: React.MouseEvent<HTMLElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+    const chk = confirm("アカウントを削除します。よろしいですか？");
+    if (chk) {
+      const oldPass = getValues("oldPass");
+      if (auth.currentUser && oldPass) {
+        const credential = EmailAuthProvider.credential(
+          auth.currentUser.email || "",
+          oldPass
+        );
+        await reauthenticateWithCredential(auth.currentUser, credential);
+        await deleteUser(auth.currentUser);
+        signOut();
+      }
+    }
   };
 
   const onChangeInputFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,11 +141,7 @@ export default function Settings() {
     }
   };
 
-  useEffect(() => {
-    setImg(session?.user?.picture || "");
-  }, [session]);
-
-  if (session && session.user)
+  if (user)
     return (
       <Layout>
         <NextHeadSeo
@@ -171,7 +191,7 @@ export default function Settings() {
             <input
               type="text"
               id="username"
-              defaultValue={session.user.name || ""}
+              defaultValue={user.name || ""}
               {...register("username", {
                 required: true,
               })}
@@ -186,7 +206,7 @@ export default function Settings() {
             <input
               type="email"
               id="email"
-              defaultValue={session.user.email || ""}
+              defaultValue={user.email || ""}
               {...register("email", {
                 required: true,
               })}
@@ -196,10 +216,11 @@ export default function Settings() {
               )}
             />
             <span className="text-sm">
-              メールアドレスを変更する場合、現在のパスワード欄にパスワードを入力してください。
+              メールアドレスを変更する場合、
+              <b>現在のパスワード欄にパスワードを入力してください</b>。
             </span>
           </div>
-          {!session.user.email_verified && (
+          {!user.email_verified && (
             <p className="font-bold text-sm text-red-500">
               メールアドレスが確認されていません。
               <button
@@ -243,6 +264,17 @@ export default function Settings() {
               className="bg-gray-100 border-0 px-3 py-2 focus:outline-none focus:border-0 focus:ring-black focus:ring-2 duration-200 text-black rounded-md"
             />
           </div>
+          <h3 className="text-xl font-bold my-3">アカウントの削除</h3>
+          <span className="text-sm">
+            アカウントを削除する場合、
+            <b>現在のパスワード欄にパスワードを入力してください</b>。
+          </span>
+          <button
+            onClick={deleteAccount}
+            className="bg-red-600 text-white px-5 py-1.5 rounded-md my-4 duration-200 hover:bg-red-500"
+          >
+            アカウントを削除
+          </button>
           <button className="bg-fuchsia-600 text-white px-5 py-1.5 rounded-md mt-4 duration-200 hover:bg-fuchsia-500">
             保存
           </button>
@@ -250,3 +282,24 @@ export default function Settings() {
       </Layout>
     );
 }
+
+export const getServerSideProps = setup(
+  async (ctx: GetServerSidePropsContext) => {
+    const token = await getToken({
+      req: ctx.req,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+    if (token) {
+      const user = JSON.parse(JSON.stringify(token, null, 2));
+      return {
+        props: {
+          user,
+        },
+      };
+    } else {
+      return {
+        notFound: true,
+      };
+    }
+  }
+);

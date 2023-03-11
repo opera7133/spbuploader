@@ -15,6 +15,9 @@ declare namespace NodeJS {
     S3_ACCESSKEY: string;
     S3_SECRETKEY: string;
     S3_BUCKET_NAME: string;
-    S3_PUBLIC_URL: string;
+    NEXT_PUBLIC_S3_PUBLIC_URL: string;
+    NEXTAUTH_URL: string;
+    NEXTAUTH_SECRET: string;
+    NEXT_CSRF_SECRET: string;
   }
 }

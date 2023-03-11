@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="text-sm container max-w-5xl mx-auto py-3 flex flex-row items-center justify-between">
+    <footer className="px-4 text-sm container max-w-5xl mx-auto py-3 flex flex-col gap-3 md:flex-row items-start md:items-center justify-between">
       <p>
         Made by{" "}
         <a
@@ -20,7 +20,12 @@ export default function Footer() {
         </a>
       </p>
       <nav>
-        <ul className="list-none flex flex-row items-center gap-4">
+        <ul className="list-none flex flex-col md:flex-row items-start md:items-center gap-4">
+          <li>
+            <Link className="hover:underline" href="/about">
+              このサイトについて
+            </Link>
+          </li>
           <li>
             <Link className="hover:underline" href="/privacy">
               プライバシーポリシー

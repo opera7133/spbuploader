@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { BiSearch } from "react-icons/bi";
+import { MdFileUpload } from "react-icons/md";
 import { useSession, signOut } from "next-auth/react";
 import { Menu, Transition } from "@headlessui/react";
 import { twMerge } from "tailwind-merge";
@@ -10,7 +11,7 @@ export default function Header() {
   return (
     <header className="z-50 container max-w-5xl mx-auto py-4 flex flex-row items-center justify-between">
       <div>
-        <h1 className="text-xl font-bold">
+        <h1 className="hidden md:block text-xl font-bold">
           <Link href="/">SPBUploader</Link>
         </h1>
       </div>
@@ -18,11 +19,6 @@ export default function Header() {
         <ul className="list-none flex flex-row gap-4 items-center">
           <li>
             <Link href="/">譜面一覧</Link>
-          </li>
-          <li>
-            <Link href="/search">
-              <BiSearch size={25} />
-            </Link>
           </li>
           {session ? (
             <>
@@ -75,6 +71,21 @@ export default function Header() {
                         </Menu.Item>
                         <Menu.Item>
                           {({ active }) => (
+                            <a
+                              href="https://sparebeat.com/settings"
+                              rel="noopener noreferrer"
+                              target="_blank"
+                              className={twMerge(
+                                "duration-200 group flex w-full items-center rounded-md px-2 py-2 text-sm",
+                                active && "bg-fuchsia-600 text-white"
+                              )}
+                            >
+                              プレイヤー設定
+                            </a>
+                          )}
+                        </Menu.Item>
+                        <Menu.Item>
+                          {({ active }) => (
                             <button
                               onClick={() => signOut()}
                               className={twMerge(
@@ -94,9 +105,15 @@ export default function Header() {
               <li>
                 <Link
                   href="/add"
-                  className="bg-fuchsia-600 text-sm text-white px-4 py-2 rounded-lg font-medium duration-200 hover:bg-fuchsia-500"
+                  className="bg-fuchsia-600 text-sm text-white px-4 py-2 rounded-lg font-medium duration-200 hover:bg-fuchsia-500 hidden md:block"
                 >
                   アップロード
+                </Link>
+                <Link
+                  href="/add"
+                  className="bg-fuchsia-600 text-sm text-white p-2 rounded-full flex items-center duration-200 hover:bg-fuchsia-500 md:hidden mr-3"
+                >
+                  <MdFileUpload size={25} className="inline-block" />
                 </Link>
               </li>
             </>

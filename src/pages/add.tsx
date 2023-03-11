@@ -1,4 +1,6 @@
 import Layout from "@/components/Layout";
+import { setup } from "@/lib/csrf";
+import { GetServerSidePropsContext } from "next";
 import { useSession } from "next-auth/react";
 import NextHeadSeo from "next-head-seo";
 import { useRouter } from "next/router";
@@ -13,6 +15,7 @@ type Inputs = {
     file: FileList;
   };
   map: {
+    desc: string;
     file: FileList;
   };
 };
@@ -27,25 +30,24 @@ export default function Upload() {
   } = useForm<Inputs>();
   const router = useRouter();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    try {
-      if (session && session.user) {
-        const formData = new FormData();
-        formData.append("song[name]", data.song.name);
-        formData.append("song[composer]", data.song.composer);
-        formData.append("song[file]", data.song.file[0]);
-        formData.append("map[file]", data.map.file[0]);
-        const res = await (
-          await fetch("/api/map/create", {
-            method: "POST",
-            body: formData,
-          })
-        ).json();
+    if (session && session.user) {
+      const formData = new FormData();
+      formData.append("song[name]", data.song.name);
+      formData.append("song[composer]", data.song.composer);
+      formData.append("song[file]", data.song.file[0]);
+      formData.append("map[file]", data.map.file[0]);
+      formData.append("map[desc]", data.map.desc);
+      const res = await (
+        await fetch("/api/map/create", {
+          method: "POST",
+          body: formData,
+        })
+      ).json();
+      if (res.status === "error") {
+        toast.error(res.error);
+      } else {
         toast.success("譜面を投稿しました");
-        router.push(`/map/${res.data.id}`);
-      }
-    } catch (e) {
-      if (e instanceof Error) {
-        toast.error(e.message);
+        router.push(`/map/${res.id}`);
       }
     }
   };
@@ -56,8 +58,10 @@ export default function Upload() {
           title="追加 - SPBUploader"
           description="シンプルなSparebeatの譜面アップローダー"
         />
-        <h2 className="text-3xl font-bold mb-3">追加</h2>
-        <p>このページからあなたの制作した譜面を投稿できます。</p>
+        <div className="px-4">
+          <h2 className="text-3xl font-bold mb-3">追加</h2>
+          <p>このページからあなたの制作した譜面を投稿できます。</p>
+        </div>
         <form
           className="bg-white my-4 px-8 py-4 rounded-md"
           onSubmit={handleSubmit(onSubmit)}
@@ -128,6 +132,20 @@ export default function Upload() {
               JSON
             </p>
           </div>
+          <div className="my-3 flex flex-col gap-1">
+            <label htmlFor="desc">説明</label>
+            <textarea
+              id="desc"
+              {...register("map.desc", { maxLength: 255 })}
+              className={twMerge(
+                "bg-gray-100 border-0 px-3 py-2 focus:outline-none focus:border-0 focus:ring-black focus:ring-2 duration-200 text-black rounded-md",
+                errors.map?.desc && "ring-red-500 ring-2"
+              )}
+            />
+            <p className="mt-1 text-sm text-gray-600">
+              最大255文字、改行は全て無視されます。
+            </p>
+          </div>
           <button className="w-full bg-fuchsia-600 text-white py-2 rounded-md mt-4 duration-200 hover:bg-fuchsia-500">
             アップロード
           </button>
@@ -135,3 +153,9 @@ export default function Upload() {
       </Layout>
     );
 }
+
+export const getServerSideProps = setup(
+  async (ctx: GetServerSidePropsContext) => {
+    return { props: {} };
+  }
+);

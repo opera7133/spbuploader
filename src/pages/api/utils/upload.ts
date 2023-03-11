@@ -1,13 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   S3Client,
-  DeleteObjectsCommand,
-  DeleteObjectsCommandInput,
   PutObjectCommand,
   PutObjectCommandInput
 } from "@aws-sdk/client-s3";
+import { csrf } from "@/lib/csrf";
 
-export default async function upload(req: NextApiRequest, res: NextApiResponse) {
+async function upload(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (!req.body.type || !req.body.filename || !req.body.content) return res.status(400).json({ status: "error", error: "request invalid" })
     const R2 = new S3Client({
@@ -44,3 +43,5 @@ export default async function upload(req: NextApiRequest, res: NextApiResponse) 
     }
   }
 }
+
+export default csrf(upload);

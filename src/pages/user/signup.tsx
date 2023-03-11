@@ -5,7 +5,8 @@ import {
   signInWithPopup,
   GithubAuthProvider,
   GoogleAuthProvider,
-  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import type { AuthProvider } from "firebase/auth";
 import { BsGithub, BsGoogle, BsFillEnvelopeFill } from "react-icons/bs";
@@ -34,13 +35,18 @@ export default function SignUp() {
   const {
     register,
     handleSubmit,
-    getValues,
     formState: { errors },
   } = useForm<SignUpInputs>();
 
   const onSubmit: SubmitHandler<SignUpInputs> = async (data) => {
-    signInWithEmailAndPassword(auth, data.email, data.password)
-      .then((credential) => credential.user.getIdToken(true))
+    createUserWithEmailAndPassword(auth, data.email, data.password)
+      .then(async (credential) => {
+        const user = credential.user;
+        await updateProfile(user, {
+          displayName: data.name,
+        });
+        return credential.user.getIdToken(true);
+      })
       .then((idToken) => {
         signIn("credentials", { idToken });
       })
@@ -89,6 +95,21 @@ export default function SignUp() {
               className="my-4 text-left flex flex-col gap-4"
               onSubmit={handleSubmit(onSubmit)}
             >
+              <div>
+                <label htmlFor="name">ユーザー名</label>
+                <div className="mt-1 flex flex-col gap-1">
+                  <input
+                    className={twMerge(
+                      "bg-gray-100 border-0 text-lg px-3 py-2 focus:outline-none focus:border-0 focus:ring-black focus:ring-2 duration-200 text-black rounded-md",
+                      errors.name && "ring-red-500 ring-2"
+                    )}
+                    type="text"
+                    {...register("name", { required: true })}
+                    id="name"
+                    placeholder="username@example.com"
+                  />
+                </div>
+              </div>
               <div>
                 <label htmlFor="email">メールアドレス</label>
                 <div className="mt-1 flex flex-col gap-1">
