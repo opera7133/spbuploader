@@ -66,7 +66,7 @@ export default function About() {
       </ul>
       <h3 className="text-2xl font-bold my-4">開発に参加するには？</h3>
       <p>
-        何か提案やコードの改修案などあれば、
+        バグ報告、または何か提案やコードの改修案などあれば、
         <a
           href="https://github.com/opera7133/spbuploader"
           rel="noopener noreferrer"

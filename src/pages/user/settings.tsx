@@ -25,11 +25,16 @@ import { setup } from "@/lib/csrf";
 import { GetServerSidePropsContext } from "next";
 import { getToken } from "next-auth/jwt";
 import {
+  collection,
+  deleteDoc,
   doc,
   getDoc,
+  getDocs,
   getFirestore,
+  query,
   setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { firebaseAdmin } from "@/lib/firebaseAdmin";
 
@@ -65,10 +70,21 @@ export default function Settings({ user }: any) {
     e: React.MouseEvent<HTMLElement, MouseEvent>
   ) => {
     e.preventDefault();
-    const chk = confirm("アカウントを削除します。よろしいですか？");
+    const chk = confirm(
+      "アカウントを削除すると、投稿した譜面は全て削除されます。よろしいですか？"
+    );
     if (chk) {
       const oldPass = getValues("oldPass");
       if (auth.currentUser && oldPass) {
+        const db = getFirestore(firebaseApp);
+        await deleteDoc(doc(db, "users", user.uid));
+        const mapDocs = getDocs(
+          query(collection(db, "maps"), where("uid", "==", user.uid))
+        ).then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            deleteDoc(doc.ref);
+          });
+        });
         const credential = EmailAuthProvider.credential(
           auth.currentUser.email || "",
           oldPass
