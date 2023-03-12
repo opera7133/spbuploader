@@ -9,6 +9,8 @@ import toast from "react-hot-toast";
 import { twMerge } from "tailwind-merge";
 
 type Inputs = {
+  confirm: boolean;
+  own: boolean;
   song: {
     name: string;
     composer: string;
@@ -149,6 +151,33 @@ export default function Upload() {
             <p className="mt-1 text-sm text-gray-600">
               最大255文字、改行は全て無視されます。
             </p>
+          </div>
+          <div className="my-3 flex flex-col gap-1">
+            <label>確認</label>
+            <label className="flex flex-row gap-2 items-center">
+              <input
+                id="confirm"
+                type="checkbox"
+                {...register("confirm", { required: true })}
+                className={twMerge(
+                  "bg-gray-200 border-0  focus:outline-none focus:border-0 focus:ring-fuchsia-500 text-fuchsia-500 focus:ring-2 duration-200 rounded",
+                  errors.confirm && "ring-red-500 ring-2"
+                )}
+              />
+              投稿する楽曲は、権利的に問題のないものです。
+            </label>
+            <label className="flex flex-row gap-2 items-center">
+              <input
+                id="own"
+                type="checkbox"
+                {...register("own", { required: true })}
+                className={twMerge(
+                  "bg-gray-200 border-0  focus:outline-none focus:border-0 focus:ring-fuchsia-500 text-fuchsia-500 focus:ring-2 duration-200 rounded",
+                  errors.own && "ring-red-500 ring-2"
+                )}
+              />
+              この譜面は私が制作したものです。
+            </label>
           </div>
           <button className="w-full bg-fuchsia-600 text-white py-2 rounded-md mt-4 duration-200 hover:bg-fuchsia-500">
             アップロード
