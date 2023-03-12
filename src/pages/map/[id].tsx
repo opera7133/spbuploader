@@ -75,11 +75,6 @@ export default function ShowMap({ user, id, data }: any) {
     }
   };
   useEffect(() => {
-    //@ts-ignore
-    Sparebeat.load(
-      `${process.env.NEXT_PUBLIC_S3_PUBLIC_URL}/maps/${id}/${data.map.fileName}`,
-      `${process.env.NEXT_PUBLIC_S3_PUBLIC_URL}/maps/${id}/${data.song.fileName}`
-    );
     setScale();
     window.addEventListener("resize", () => {
       setScale();
@@ -166,6 +161,13 @@ export default function ShowMap({ user, id, data }: any) {
         <Script
           src="https://sparebeat.com/embed/client.js"
           strategy="afterInteractive"
+          onLoad={() => {
+            //@ts-ignore
+            Sparebeat.load(
+              `${process.env.NEXT_PUBLIC_S3_PUBLIC_URL}/maps/${id}/${data.map.fileName}`,
+              `${process.env.NEXT_PUBLIC_S3_PUBLIC_URL}/maps/${id}/${data.song.fileName}`
+            );
+          }}
         />
       </div>
       {user && data.uid === user.id && (
