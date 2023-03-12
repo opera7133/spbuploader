@@ -26,7 +26,7 @@ export default function Home({ data }: any) {
         }}
         twitter={{
           card: "summary",
-          site: "https://spb.wmsci.com",
+          site: process.env.NEXT_PUBLIC_TWITTER_USER || "@scgame_m",
         }}
       />
       <Layout className="px-4">

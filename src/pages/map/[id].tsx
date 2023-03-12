@@ -92,7 +92,7 @@ export default function ShowMap({ user, id, data }: any) {
         }}
         twitter={{
           card: "summary",
-          site: "https://spb.wmsci.com",
+          site: process.env.NEXT_PUBLIC_TWITTER_USER || "@scgame_m",
         }}
       />
       <div className="flex flex-col md:flex-row justify-between items-start px-4">

@@ -14,7 +14,7 @@ export default function About() {
         }}
         twitter={{
           card: "summary",
-          site: "https://spb.wmsci.com",
+          site: process.env.NEXT_PUBLIC_TWITTER_USER || "@scgame_m",
         }}
       />
       <h2 className="text-3xl font-bold my-4">Q&A</h2>

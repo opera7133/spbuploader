@@ -36,7 +36,7 @@ export default function Profile({ user }: any) {
         }}
         twitter={{
           card: "summary",
-          site: "https://spb.wmsci.com",
+          site: process.env.NEXT_PUBLIC_TWITTER_USER || "@scgame_m",
         }}
       />
       <div>
