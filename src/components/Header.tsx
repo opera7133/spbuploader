@@ -126,7 +126,7 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/add"
-                  className="bg-fuchsia-600 text-sm text-white p-2 rounded-full flex items-center duration-200 hover:bg-fuchsia-500 md:hidden mr-3"
+                  className="bg-fuchsia-600 text-sm text-white p-2 rounded-full flex items-center duration-200 hover:bg-fuchsia-500 md:hidden"
                 >
                   <MdFileUpload size={25} className="inline-block" />
                 </Link>
