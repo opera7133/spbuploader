@@ -128,7 +128,7 @@ export default function ShowMap({ user, id, data }: any) {
         </div>
 
         <div className="flex items-center gap-2">
-          {data.uid === user?.id && (
+          {user && data.uid === user.id && (
             <button
               onClick={deleteMap}
               className="p-3 duration-200 rounded-full hover:bg-gray-300"
@@ -170,7 +170,7 @@ export default function ShowMap({ user, id, data }: any) {
           }}
         />
       </div>
-      {data.uid === user.id && (
+      {user && data.uid === user.id && (
         <div>
           <h2 className="text-xl font-bold my-2">
             {data.timeline ? "タイムラインURLを変更" : "タイムラインURLを設定"}
