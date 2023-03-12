@@ -34,6 +34,10 @@ export default function Profile({ user }: any) {
           description: "シンプルなSparebeatの譜面アップローダー",
           image: `${process.env.NEXT_PUBLIC_NEXT_SITE_URL}/img/ogp.png`,
         }}
+        twitter={{
+          card: "summary",
+          site: "https://spb.wmsci.com",
+        }}
       />
       <div>
         <header className="mb-12 flex flex-row items-start gap-5">

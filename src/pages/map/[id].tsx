@@ -90,6 +90,10 @@ export default function ShowMap({ user, id, data }: any) {
           description: `Music by ${data.song.composer}, Map by ${data.map.creator}`,
           image: `${process.env.NEXT_PUBLIC_NEXT_SITE_URL}/img/ogp.png`,
         }}
+        twitter={{
+          card: "summary",
+          site: "https://spb.wmsci.com",
+        }}
       />
       <div className="flex flex-col md:flex-row justify-between items-start px-4">
         <div>

@@ -12,6 +12,10 @@ export default function Privacy() {
           description: "シンプルなSparebeatの譜面アップローダー",
           image: `${process.env.NEXT_PUBLIC_NEXT_SITE_URL}/img/ogp.png`,
         }}
+        twitter={{
+          card: "summary",
+          site: "https://spb.wmsci.com",
+        }}
       />
       <h2 className="text-3xl font-bold my-4">プライバシーポリシー</h2>
       <p>

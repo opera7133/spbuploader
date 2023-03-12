@@ -24,6 +24,10 @@ export default function Home({ data }: any) {
           description: "シンプルなSparebeatの譜面アップローダー",
           image: `${process.env.NEXT_PUBLIC_NEXT_SITE_URL}/img/ogp.png`,
         }}
+        twitter={{
+          card: "summary",
+          site: "https://spb.wmsci.com",
+        }}
       />
       <Layout className="px-4">
         <h2 className="text-3xl font-bold">譜面一覧</h2>

@@ -12,6 +12,10 @@ export default function About() {
           description: "シンプルなSparebeatの譜面アップローダー",
           image: `${process.env.NEXT_PUBLIC_NEXT_SITE_URL}/img/ogp.png`,
         }}
+        twitter={{
+          card: "summary",
+          site: "https://spb.wmsci.com",
+        }}
       />
       <h2 className="text-3xl font-bold my-4">Q&A</h2>
       <h3 className="text-2xl font-bold my-4">SPBUploaderとは？</h3>
