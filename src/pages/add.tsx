@@ -69,7 +69,7 @@ export default function Upload() {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="my-3 flex flex-col gap-1">
-            <label htmlFor="songname">曲名</label>
+            <label htmlFor="songname">曲名（任意）</label>
             <input
               type="text"
               id="songname"
@@ -79,9 +79,12 @@ export default function Upload() {
                 errors.song?.name && "ring-red-500 ring-2"
               )}
             />
+            <p className="mt-1 text-sm text-gray-600">
+              記入がない場合は譜面ファイルのデータが使用されます
+            </p>
           </div>
           <div className="my-3 flex flex-col gap-1">
-            <label htmlFor="composer">作曲者名</label>
+            <label htmlFor="composer">作曲者名（任意）</label>
             <input
               type="text"
               id="composer"
@@ -91,6 +94,9 @@ export default function Upload() {
                 errors.song?.composer && "ring-red-500 ring-2"
               )}
             />
+            <p className="mt-1 text-sm text-gray-600">
+              記入がない場合は譜面ファイルのデータが使用されます
+            </p>
           </div>
           <div className="my-3 flex flex-col gap-1">
             <label htmlFor="songfile">音楽ファイル</label>
@@ -131,7 +137,7 @@ export default function Upload() {
             </p>
           </div>
           <div className="my-3 flex flex-col gap-1">
-            <label htmlFor="desc">説明</label>
+            <label htmlFor="desc">説明（任意）</label>
             <textarea
               id="desc"
               {...register("map.desc", { maxLength: 255 })}
