@@ -66,6 +66,7 @@ async function uploadMap(req: NextApiRequest, res: NextApiResponse) {
       //@ts-ignore
       if (songFile.mimetype !== "audio/mpeg" || mapFile.mimetype !== "application/json") throw new Error("file type not allowed")
       const newDoc = await addDoc(collection(db, "maps"), {
+        favoritesCount: 0,
         uid: user.uid,
         map: {
           easy: mapData.level.easy,

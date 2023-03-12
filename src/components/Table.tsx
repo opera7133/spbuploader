@@ -207,7 +207,18 @@ export default function Table({ cols, data }: any) {
                       );
                     }
                     return (
-                      <td className="px-4 py-3" key={cell.id}>
+                      <td
+                        className={twMerge(
+                          "px-4 py-3",
+                          [
+                            "map_easy",
+                            "map_normal",
+                            "map_hard",
+                            "favoritesCount",
+                          ].includes(cell.column.id) && "text-center"
+                        )}
+                        key={cell.id}
+                      >
                         {cell.getContext().renderValue() as ReactNode}
                       </td>
                     );

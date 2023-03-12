@@ -25,7 +25,9 @@ export default function SignIn() {
   } = useForm<LoginInputs>();
 
   const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
+    const loadToast = toast.loading("送信中です...");
     await sendPasswordResetEmail(auth, data.email);
+    toast.dismiss(loadToast);
     toast.success("パスワードリセットのメールを送信しました");
   };
   if (session) {

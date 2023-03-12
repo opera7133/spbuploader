@@ -37,12 +37,15 @@ export default function SignIn() {
   } = useForm<LoginInputs>();
 
   const onSubmit: SubmitHandler<LoginInputs> = async (data) => {
+    const loadToast = toast.loading("ログイン中です...");
     signInWithEmailAndPassword(auth, data.email, data.password)
       .then((credential) => credential.user.getIdToken(true))
       .then((idToken) => {
+        toast.dismiss(loadToast);
         signIn("credentials", { idToken, callbackUrl: window.location.origin });
       })
       .catch((e) => {
+        toast.dismiss(loadToast);
         toast.error(e.message);
       });
   };

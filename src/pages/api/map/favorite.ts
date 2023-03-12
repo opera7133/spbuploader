@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { doc, updateDoc, getFirestore, getDoc, setDoc } from "firebase/firestore";
+import { doc, updateDoc, getFirestore, getDoc, setDoc, increment } from "firebase/firestore";
 import { firebaseApp } from "@/lib/firebase";
 import { getToken } from "next-auth/jwt";
 import { csrf } from '@/lib/csrf';
@@ -19,16 +19,23 @@ async function updateTimeline(req: NextApiRequest, res: NextApiResponse) {
     const user = JSON.parse(JSON.stringify(token, null, 2))
     const db = getFirestore(firebaseApp)
     const userDoc = doc(db, "users", user.uid)
+    const mapDoc = doc(db, "maps", req.query.id.toString())
     const testDoc = (await getDoc(userDoc)).data()
     if (req.query.fav === "false") {
       if (testDoc) {
         const docRes = await updateDoc(userDoc, {
-          favorites: testDoc.favorites ? [...testDoc.favorites, doc(db, "maps", req.query.id.toString())] : [doc(db, "maps", req.query.id.toString())]
+          favorites: testDoc.favorites ? [...testDoc.favorites, mapDoc] : [mapDoc]
+        })
+        const mapRes = await updateDoc(mapDoc, {
+          favoritesCount: increment(1)
         })
         return res.status(200).json({ status: "success", data: docRes })
       } else {
         const docRes = await setDoc(userDoc, {
           favorites: [doc(db, "maps", req.query.id.toString())]
+        })
+        const mapRes = await updateDoc(mapDoc, {
+          favoritesCount: increment(1)
         })
         return res.status(200).json({ status: "success", data: docRes })
       }
@@ -39,6 +46,9 @@ async function updateTimeline(req: NextApiRequest, res: NextApiResponse) {
             const favData = await getDoc(fav)
             return favData.id !== req.query.id
           })).then(fav => testDoc.favorites.filter(() => fav.shift()))
+        })
+        const mapRes = await updateDoc(mapDoc, {
+          favoritesCount: increment(-1)
         })
         return res.status(200).json({ status: "success", data: docRes })
       }

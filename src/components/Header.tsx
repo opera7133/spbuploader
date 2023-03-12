@@ -9,10 +9,25 @@ import { twMerge } from "tailwind-merge";
 export default function Header() {
   const { data: session } = useSession();
   return (
-    <header className="z-50 container max-w-5xl mx-auto py-4 flex flex-row items-center justify-between">
+    <header className="z-50 container max-w-5xl mx-auto py-4 px-4 flex flex-row items-center justify-between">
       <div>
-        <h1 className="hidden md:block text-xl font-bold">
-          <Link href="/">SPBUploader</Link>
+        <h1 className="text-xl font-bold">
+          <Link href="/">
+            <Image
+              src="/img/logo.svg"
+              alt="SPBUploader"
+              className="hidden md:block"
+              width={200}
+              height={41}
+            />
+            <Image
+              src="/img/icon.svg"
+              alt="SPBUploader"
+              className="block md:hidden"
+              width={40}
+              height={40}
+            />
+          </Link>
         </h1>
       </div>
       <nav>

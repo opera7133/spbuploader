@@ -39,18 +39,22 @@ export default function SignUp() {
   } = useForm<SignUpInputs>();
 
   const onSubmit: SubmitHandler<SignUpInputs> = async (data) => {
+    const loadToast = toast.loading("登録中です...");
     createUserWithEmailAndPassword(auth, data.email, data.password)
       .then(async (credential) => {
         const user = credential.user;
         await updateProfile(user, {
           displayName: data.name,
         });
+        toast.dismiss(loadToast);
+        toast.success("登録しました");
         return credential.user.getIdToken(true);
       })
       .then((idToken) => {
         signIn("credentials", { idToken });
       })
       .catch((e) => {
+        toast.dismiss(loadToast);
         toast.error(e.message);
       });
   };

@@ -30,6 +30,7 @@ export default function Upload() {
   const router = useRouter();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     if (session && session.user) {
+      const loadToast = toast.loading("投稿中です...");
       const formData = new FormData();
       formData.append("song[name]", data.song.name);
       formData.append("song[composer]", data.song.composer);
@@ -42,6 +43,7 @@ export default function Upload() {
           body: formData,
         })
       ).json();
+      toast.dismiss(loadToast);
       if (res.status === "error") {
         toast.error(res.error);
       } else {

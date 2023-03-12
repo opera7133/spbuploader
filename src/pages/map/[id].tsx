@@ -16,6 +16,7 @@ import { getToken } from "next-auth/jwt";
 export default function ShowMap({ user, id, data }: any) {
   const [width, setWidth] = useState(1.0);
   const [timeline, setTimeline] = useState("");
+  const [likeCount, setLikeCount] = useState(data.favoritesCount || 0);
   const [like, setLike] = useState<boolean>(
     user ? user.favorites.includes(id) : false
   );
@@ -50,6 +51,7 @@ export default function ShowMap({ user, id, data }: any) {
       toast.success(
         like ? "譜面のお気に入りを解除しました" : "譜面をお気に入りしました"
       );
+      setLikeCount(like ? likeCount - 1 : likeCount + 1);
       setLike(!like);
     }
   };
@@ -118,6 +120,7 @@ export default function ShowMap({ user, id, data }: any) {
           <p className="my-1">
             追加日：{format(new Date(data.createdAt), "yyyy/MM/dd")}
           </p>
+          <p>お気に入り数：{likeCount}</p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -129,7 +132,7 @@ export default function ShowMap({ user, id, data }: any) {
               <BsTrash3Fill size={20} />
             </button>
           )}
-          {data.uid !== user?.id && (
+          {user && data.uid !== user.id && (
             <button
               onClick={favMap}
               className="p-3 duration-200 rounded-full hover:bg-gray-300"
@@ -153,6 +156,7 @@ export default function ShowMap({ user, id, data }: any) {
         ></iframe>
         <Script
           src="https://sparebeat.com/embed/client.js"
+          strategy="afterInteractive"
           onLoad={() => {
             //@ts-ignore
             Sparebeat.load(

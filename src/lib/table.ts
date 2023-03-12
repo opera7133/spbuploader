@@ -47,6 +47,10 @@ export const COLUMNS: ColumnDef<any>[] = [
       }
     ]
   },
+  {
+    header: 'お気に入り',
+    accessorKey: "favoritesCount"
+  }
 ];
 
 export const USERCOLUMNS: ColumnDef<any>[] = [

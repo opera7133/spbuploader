@@ -15,7 +15,7 @@ async function deleteMap(req: NextApiRequest, res: NextApiResponse) {
     if (!req.query.id) throw new Error("id not provided")
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
     if (!token) return res.status(400).json({ status: "error", error: "not logged in" })
-    // get firestore data and delete it
+
     const user = JSON.parse(JSON.stringify(token, null, 2))
     const db = getFirestore(firebaseApp)
     const docRef = doc(db, "maps", req.query.id.toString())
@@ -24,7 +24,6 @@ async function deleteMap(req: NextApiRequest, res: NextApiResponse) {
     if (!deleteDocData || deleteDocData.uid !== user.uid) throw new Error("user id does not match")
     await deleteDoc(docRef);
 
-    // get items of r2 bucket and delete it
     const R2 = new S3Client({
       region: process.env.S3_REGION,
       endpoint: process.env.S3_ENDPOINT,

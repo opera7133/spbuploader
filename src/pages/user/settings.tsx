@@ -113,6 +113,7 @@ export default function Settings({ user }: any) {
   };
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    const loadToast = toast.loading("保存中です...");
     try {
       if (auth.currentUser) {
         if (img) {
@@ -172,11 +173,12 @@ export default function Settings({ user }: any) {
           await reauthenticateWithCredential(auth.currentUser, credential);
           await updateEmail(auth.currentUser, data.email);
         }
+        toast.dismiss(loadToast);
         toast.success("ユーザー情報を保存しました");
-        router.reload();
       }
     } catch (e) {
       if (e instanceof Error) {
+        toast.dismiss(loadToast);
         toast.error(e.message);
       }
     }

@@ -5,10 +5,13 @@ import {
   PutObjectCommandInput
 } from "@aws-sdk/client-s3";
 import { csrf } from "@/lib/csrf";
+import { getToken } from "next-auth/jwt";
 
 async function upload(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (!req.body.type || !req.body.filename || !req.body.content) return res.status(400).json({ status: "error", error: "request invalid" })
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+    if (!token) return res.status(400).json({ status: "error", error: "not logged in" })
     const R2 = new S3Client({
       region: process.env.S3_REGION,
       endpoint: process.env.S3_ENDPOINT,
