@@ -158,17 +158,10 @@ export default function ShowMap({ user, id, data }: any) {
           src="https://sparebeat.com/embed/"
           className="origin-top-left aspect-sparebeat border-0"
         ></iframe>
-        <Script
-          src="https://sparebeat.com/embed/client.js"
-          strategy="afterInteractive"
-          onLoad={() => {
-            //@ts-ignore
-            Sparebeat.load(
-              `${process.env.NEXT_PUBLIC_S3_PUBLIC_URL}/maps/${id}/${data.map.fileName}`,
-              `${process.env.NEXT_PUBLIC_S3_PUBLIC_URL}/maps/${id}/${data.song.fileName}`
-            );
-          }}
-        />
+        <Script id={data.id} strategy="afterInteractive">{`Sparebeat.load(
+          "${process.env.NEXT_PUBLIC_S3_PUBLIC_URL}/maps/${id}/${data.map.fileName}",
+          "${process.env.NEXT_PUBLIC_S3_PUBLIC_URL}/maps/${id}/${data.song.fileName}"
+        );`}</Script>
       </div>
       {user && data.uid === user.id && (
         <div>
