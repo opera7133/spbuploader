@@ -89,7 +89,14 @@ export default function ShowMap({ user, id, data }: any) {
           title: `${data.song.name} - SPBUploader`,
           description: `Music by ${data.song.composer}, Map by ${data.map.creator}`,
           image: `${process.env.NEXT_PUBLIC_NEXT_SITE_URL}/img/ogp.png`,
+          siteName: "SPBUploader"
         }}
+        customMetaTags={[
+          {
+            name: 'keywords',
+            content: 'Sparebeat,スペアビート,Sparebeatアップローダー,スペアビートアップローダー,譜面投稿,音ゲー'
+          }
+        ]}
         twitter={{
           card: "summary",
           site: process.env.NEXT_PUBLIC_TWITTER_USER || "@scgame_m",

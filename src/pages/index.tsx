@@ -23,7 +23,14 @@ export default function Home({ data }: any) {
           title: "SPBUploader",
           description: "シンプルなSparebeatの譜面アップローダー",
           image: `${process.env.NEXT_PUBLIC_NEXT_SITE_URL}/img/ogp.png`,
+          siteName: "SPBUploader"
         }}
+        customMetaTags={[
+          {
+            name: 'keywords',
+            content: 'Sparebeat,スペアビート,Sparebeatアップローダー,スペアビートアップローダー,譜面投稿,音ゲー'
+          }
+        ]}
         twitter={{
           card: "summary",
           site: process.env.NEXT_PUBLIC_TWITTER_USER || "@scgame_m",
