@@ -9,7 +9,7 @@ suzukibakery氏の開発したウェブブラウザ上で動作する音楽ゲ�
 Sparebeatの譜面を作成する場合は、以下のサイトやツールを参考にしてください。
 
 [よもぎもちの物置](https://yomogimochi45.xxxxxxxx.jp/htm0.html)
-[Sparebeat Map Editor](https://spbe.wmsci.com)
+[Sparebeat Map Editor](https://spbe.bo-yakitarako.dev/)
 
 ## 構成
 - Next.js 13
