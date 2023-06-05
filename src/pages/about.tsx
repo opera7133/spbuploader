@@ -71,7 +71,7 @@ export default function About() {
             target="_blank"
             className="text-blue-500 duration-200 hover:text-blue-700"
           >
-            Sparebeat Map Editor（not本家）
+            Sparebeat Map Editor
           </a>
         </li>
       </ul>
