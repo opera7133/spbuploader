@@ -66,7 +66,7 @@ export default function About() {
         </li>
         <li>
           <a
-            href="https://spbe.wmsci.com/"
+            href="https://spbe.bo-yakitarako.dev/"
             rel="noopener noreferrer"
             target="_blank"
             className="text-blue-500 duration-200 hover:text-blue-700"
