@@ -48,7 +48,7 @@
     "@tailwindcss/typography": "^0.5.9",
     "@types/node": "18.14.6",
     "autoprefixer": "^10.4.13",
-    "postcss": "^8.4.21",
+    "postcss": "^8.4.31",
     "tailwindcss": "^3.2.7",
     "ts-node": "^10.9.1"
   }
