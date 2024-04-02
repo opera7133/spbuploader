@@ -89,13 +89,14 @@ export default function ShowMap({ user, id, data }: any) {
           title: `${data.song.name} - SPBUploader`,
           description: `Music by ${data.song.composer}, Map by ${data.map.creator}`,
           image: `${process.env.NEXT_PUBLIC_NEXT_SITE_URL}/img/ogp.png`,
-          siteName: "SPBUploader"
+          siteName: "SPBUploader",
         }}
         customMetaTags={[
           {
-            name: 'keywords',
-            content: 'Sparebeat,スペアビート,Sparebeatアップローダー,スペアビートアップローダー,譜面投稿,音ゲー'
-          }
+            name: "keywords",
+            content:
+              "Sparebeat,スペアビート,Sparebeatアップローダー,スペアビートアップローダー,譜面投稿,音ゲー",
+          },
         ]}
         twitter={{
           card: "summary",
@@ -135,7 +136,7 @@ export default function ShowMap({ user, id, data }: any) {
         </div>
 
         <div className="flex items-center gap-2">
-          {user && data.uid === user.id && (
+          {user && data.uid === user.uid && (
             <button
               onClick={deleteMap}
               className="p-3 duration-200 rounded-full hover:bg-gray-300"
@@ -143,7 +144,7 @@ export default function ShowMap({ user, id, data }: any) {
               <BsTrash3Fill size={20} />
             </button>
           )}
-          {user && data.uid !== user.id && (
+          {user && data.uid !== user.uid && (
             <button
               onClick={favMap}
               className="p-3 duration-200 rounded-full hover:bg-gray-300"
