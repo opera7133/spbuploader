@@ -79,6 +79,7 @@ async function uploadMap(req: NextApiRequest, res: NextApiResponse) {
           mapFile.mimetype !== "application/json"
         )
           throw new Error("file type not allowed");
+        console.log(fields);
         const newDoc = await addDoc(collection(db, "maps"), {
           favoritesCount: 0,
           uid: user.uid,
@@ -92,10 +93,10 @@ async function uploadMap(req: NextApiRequest, res: NextApiResponse) {
             desc: fields["map[desc]"]?.toString().replace(/\n/g, ""),
           },
           song: {
-            name: fields["song[name]"] || mapData.title,
+            name: fields["song[name]"]?.toString() || mapData.title.toString(),
             //@ts-ignore
             fileName: songFile.originalFilename,
-            composer: fields["song[composer]"] || mapData.artist,
+            composer: fields["song[composer]"]?.toString() || mapData.artist.toString(),
             composerUrl: mapData.url || "",
           },
           createdAt: Timestamp.fromDate(new Date()),
