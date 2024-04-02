@@ -15,7 +15,6 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.540.0",
     "@headlessui/react": "^1.7.18",
-    "@next-auth/firebase-adapter": "^2.0.1",
     "@opera7133/next-csrf": "0.2.1-fix",
     "@tanstack/match-sorter-utils": "^8.15.1",
     "@tanstack/react-table": "^8.15.3",

@@ -11,9 +11,6 @@ dependencies:
   '@headlessui/react':
     specifier: ^1.7.18
     version: 1.7.18(react-dom@18.2.0)(react@18.2.0)
-  '@next-auth/firebase-adapter':
-    specifier: ^2.0.1
-    version: 2.0.1(firebase-admin@12.0.0)(next-auth@4.24.7)
   '@opera7133/next-csrf':
     specifier: 0.2.1-fix
     version: 0.2.1-fix
@@ -1441,16 +1438,6 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
-
-  /@next-auth/firebase-adapter@2.0.1(firebase-admin@12.0.0)(next-auth@4.24.7):
-    resolution: {integrity: sha512-4bQTa+IU8/I/mSOQcnrpQ9BYM6Xpk5BJx1TrxDpk4xKl2z0ZKE7Un+yl+U/9crmfpTvCoLOh6j9axmJMacJV2w==}
-    peerDependencies:
-      firebase-admin: ^11.4.1
-      next-auth: ^4
-    dependencies:
-      firebase-admin: 12.0.0
-      next-auth: 4.24.7(next@14.1.4)(react-dom@18.2.0)(react@18.2.0)
-    dev: false
 
   /@next/env@14.1.4:
     resolution: {integrity: sha512-e7X7bbn3Z6DWnDi75UWn+REgAbLEqxI8Tq2pkFOFAMpWAWApz/YCUhtWMWn410h8Q2fYiYL7Yg5OlxMOCfFjJQ==}
