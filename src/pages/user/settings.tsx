@@ -366,7 +366,6 @@ export const getServerSideProps = setup(
       const user = JSON.parse(
         JSON.stringify(await firebaseAdmin.auth().getUser(token.uid))
       );
-      console.log(user);
       const db = getFirestore(firebaseApp);
       const userRef = doc(db, "users", user.uid);
       const userData = (await getDoc(userRef)).data();

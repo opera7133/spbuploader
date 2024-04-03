@@ -3,7 +3,7 @@ import NextHeadSeo from "next-head-seo";
 
 export default function Privacy() {
   return (
-    <Layout>
+    <Layout className="px-4">
       <NextHeadSeo
         title="プライバシーポリシー - SPBUploader"
         description="シンプルなSparebeatの譜面アップローダー"
@@ -11,13 +11,14 @@ export default function Privacy() {
           title: "プライバシーポリシー - SPBUploader",
           description: "シンプルなSparebeatの譜面アップローダー",
           image: `${process.env.NEXT_PUBLIC_NEXT_SITE_URL}/img/ogp.png`,
-          siteName: "SPBUploader"
+          siteName: "SPBUploader",
         }}
         customMetaTags={[
           {
-            name: 'keywords',
-            content: 'Sparebeat,スペアビート,Sparebeatアップローダー,スペアビートアップローダー,譜面投稿,音ゲー'
-          }
+            name: "keywords",
+            content:
+              "Sparebeat,スペアビート,Sparebeatアップローダー,スペアビートアップローダー,譜面投稿,音ゲー",
+          },
         ]}
         twitter={{
           card: "summary",

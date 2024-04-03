@@ -15,6 +15,7 @@ import { getToken } from "next-auth/jwt";
 
 export default function ShowMap({ user, id, data }: any) {
   const [width, setWidth] = useState(1.0);
+  const [height, setHeight] = useState(640);
   const [timeline, setTimeline] = useState("");
   const [likeCount, setLikeCount] = useState(data.favoritesCount || 0);
   const [like, setLike] = useState<boolean>(
@@ -79,6 +80,7 @@ export default function ShowMap({ user, id, data }: any) {
     window.addEventListener("resize", () => {
       setScale();
     });
+    window.outerWidth > 990 ? setHeight(640) : setHeight(1280);
   }, []);
   return (
     <Layout>
@@ -160,11 +162,11 @@ export default function ShowMap({ user, id, data }: any) {
       <div className="my-4">
         <iframe
           width="960"
-          height="640"
+          height={height}
           style={{ transform: `scale(${width})` }}
           id="sparebeat"
           src="https://sparebeat.com/embed/"
-          className="origin-top-left aspect-sparebeat border-0"
+          className="origin-top-left border-0"
         ></iframe>
         <Script id={data.id} strategy="afterInteractive">{`Sparebeat.load(
           "${process.env.NEXT_PUBLIC_S3_PUBLIC_URL}/maps/${id}/${data.map.fileName}",

@@ -1,7 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-.aspect-sparebeat {
-  aspect-ratio: 3 / 4;
-}
